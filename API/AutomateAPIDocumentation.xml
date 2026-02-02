@@ -59,6 +59,7 @@
             Initialise une nouvelle instance du contrôleur <see cref="T:API.Controllers.UtilisateurController"/>.
             </summary>
             <param name="service">Service applicatif chargé de la logique métier des utilisateurs.</param>
+            <param name="tokenService">Service pour la génération de token</param>
         </member>
         <member name="M:API.Controllers.UtilisateurController.Login(LogicLayer.Utilisateur)">
             <summary>
@@ -328,7 +329,14 @@
             et pour vérifier si un mot de passe en texte clair correspond à un hash stocké.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:API.Services.Interfaces.IHasherPassword.Hash(System.String)" -->
+        <member name="M:API.Services.Interfaces.IHasherPassword.Hash(System.String)">
+            <summary>
+            Hache un mot de passe
+            Le mot de passe est transformé en un hash sécurisé avec un sel généré automatiquement.
+            </summary>
+            <param name="password">Le mot de passe en texte clair à hacher.</param>
+            <returns>Une chaîne de caractères représentant le hash du mot de passe, incluant le sel et le facteur de travail.</returns>
+        </member>
         <member name="M:API.Services.Interfaces.IHasherPassword.Verify(System.String,System.String)">
             <summary>
             Vérifie si un mot de passe en texte clair correspond à un hash stocké.
@@ -393,6 +401,20 @@
             <inheritdoc/>
         </member>
         <member name="M:API.Services.Realisations.AutomateService.UpdateAutomate(LogicLayer.Automate)">
+            <inheritdoc/>
+        </member>
+        <member name="T:API.Services.Realisations.JWTokenService">
+            <summary>
+            Implémentation JWT de ITokenService
+            </summary>
+        </member>
+        <member name="M:API.Services.Realisations.JWTokenService.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Constructeur
+            </summary>
+            <param name="config">Configuration</param>
+        </member>
+        <member name="M:API.Services.Realisations.JWTokenService.GenerateToken(LogicLayer.Utilisateur)">
             <inheritdoc/>
         </member>
         <member name="T:API.Services.Realisations.UtilisateurService">
