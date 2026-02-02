@@ -22,7 +22,7 @@
             </summary>
             <returns>Liste des automates ou code d'erreur.</returns>
         </member>
-        <member name="M:API.Controllers.AutomateController.GetAllAutomatesByUser(LogicLayer.Utilisateur)">
+        <member name="M:API.Controllers.AutomateController.GetAllAutomatesByUser">
             <summary>
             Récupère la liste de tous les automates d'un utilisateur spécifiques.
             </summary>
@@ -54,7 +54,7 @@
             Contrôleur d'API responsable de la gestion des entités <see cref="T:LogicLayer.Utilisateur"/>.
             </summary>
         </member>
-        <member name="M:API.Controllers.UtilisateurController.#ctor(API.Services.Interfaces.IUtilisateurService)">
+        <member name="M:API.Controllers.UtilisateurController.#ctor(API.Services.Interfaces.IUtilisateurService,API.Services.Interfaces.ITokenService)">
             <summary>
             Initialise une nouvelle instance du contrôleur <see cref="T:API.Controllers.UtilisateurController"/>.
             </summary>
@@ -336,6 +336,18 @@
             <param name="password">Le mot de passe en texte clair à vérifier.</param>
             <param name="storedHash">Le hash stocké du mot de passe à comparer.</param>
             <returns>Vrai si le mot de passe correspond au hash, sinon faux.</returns>
+        </member>
+        <member name="T:API.Services.Interfaces.ITokenService">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:API.Services.Interfaces.ITokenService.GenerateToken(LogicLayer.Utilisateur)">
+            <summary>
+            Génère un token JWT pour un utilisateur authentifié
+            </summary>
+            <param name="user">Utilisateur authentifié</param>
+            <returns>Token JWT</returns>
         </member>
         <member name="T:API.Services.Interfaces.IUtilisateurService">
             <summary>
