@@ -62,61 +62,6 @@ git clone https://github.com/dept-info-iut-dijon/S5_ModernTech_AutomateDesign.gi
 
 <img width="620" height="99" alt="image" src="https://github.com/user-attachments/assets/7854a413-970f-49a2-891a-8a7292c330a5" />
 
-## Lancer le client WPF
-- Cliquez sur le dossier Client
-  
-<img width="196" height="259" alt="image" src="https://github.com/user-attachments/assets/5d851ae1-3668-4075-97e8-f9fb870d020b" />
-
-- Cliquez sur la solution AutomateDesign.sln
-
-<img width="252" height="429" alt="image" src="https://github.com/user-attachments/assets/ce6f62aa-d0bb-426e-a946-7d1de3d5895c" />
-
-- Choisisez Visual Studio 2022 pour ouvrir la solution
-- Cliquez sur la flèche à coté de l'engrenage et sélectionner IHM
-
-<img width="189" height="191" alt="image" src="https://github.com/user-attachments/assets/5d7a0368-212f-4b04-8eef-afafa28bcb7a" />
-
-- Cliquez sur le bouton Démarrer
-
-<img width="66" height="63" alt="image" src="https://github.com/user-attachments/assets/5d433954-0ea7-478d-a4d5-3a285cbd9310" />
-
-## Lancer le client et l'API
-- Cliquez sur le dossier Client
-  
-<img width="196" height="259" alt="image" src="https://github.com/user-attachments/assets/5d851ae1-3668-4075-97e8-f9fb870d020b" />
-
-- Cliquez sur la solution AutomateDesign.sln
-
-<img width="252" height="429" alt="image" src="https://github.com/user-attachments/assets/ce6f62aa-d0bb-426e-a946-7d1de3d5895c" />
-
-- Choisisez Visual Studio 2022 pour ouvrir la solution
-- Cliquez sur la fleche à coté de démarrer et choissiez "Configurez des projets de start-up"
-
-<img width="280" height="98" alt="image" src="https://github.com/user-attachments/assets/419b8270-83d9-4cec-9c51-9b0ce5a02e8e" />
-
-- Cocher plusieurs projets de démarrages
-
-<img width="223" height="381" alt="image" src="https://github.com/user-attachments/assets/c5857362-353d-450a-ba91-8cfe73c878fc" />
-
-- Activer IHM et API (avec le type de démarrage de l'api (https,http,Docker))
-
-<img width="309" height="242" alt="image" src="https://github.com/user-attachments/assets/40c464fe-cb47-4a2f-9030-99f9b71e50eb" />
-
-- Cliquez sur Appliquer
-
-<img width="587" height="384" alt="image" src="https://github.com/user-attachments/assets/349c3c05-68b2-40b7-98be-3ea2c8735107" />
-
-
-### Configuration de la connexion Client-API
-La connexion entre le client et l'API est gérée dans un projet nommé ClientData et les adresses sont stockées dans le fichier appsettings.json (il se trouve également dans le dossier contenant l'executable dans les releases)
-
-<img width="669" height="148" alt="Capture d’écran 2025-11-13 142229" src="https://github.com/user-attachments/assets/53c19d25-5203-4c93-bae9-8f9fdb6aff8a" />
-
-- LocalMode permet à la classe APIConfig de savoir si il doit utiliser l'adresse se trouvant dans LocalUrl ou BaseUrl (true (le client utilisera l'api en localhost) ou false (le client utilisera l'api qui est actuellement déployé))
-- BaseUrl coresspond à l'adresse de l'API déployé
-- APICertificate correspond aux certificat de sécurité de l'API (SHA-1)
-- LocalUrl correspond à l'adresse utilisé pour l'hébergement local de l'API
-
 ## Hébergement de l'API
 L'hébergement est réalisé sur Docker sur un serveur uniquement accesible via le VPN de l'IUT de Dijon
 
@@ -262,69 +207,6 @@ l'archive devra se trouvait dans ce dossier
 <img width="645" height="242" alt="image" src="https://github.com/user-attachments/assets/d57a06ce-0529-47de-b5fb-0350239e557c" />
 
 - Copiez l'archive dans un endroit plus accessible
-### Connexion sur Portainer
-- Connectez-vous  à votre Portainer
-
-<img width="471" height="501" alt="image" src="https://github.com/user-attachments/assets/1e552621-cac9-47bc-b3cf-309b0d497feb" />
-
-- Selectionner votre environement 
-
-<img width="1597" height="397" alt="image" src="https://github.com/user-attachments/assets/dfacfb72-3b03-4f83-b8d9-29f7d07d1cf5" />
-
-### Importation d'une Image
-- Allez dans la page Image
-
-<img width="254" height="272" alt="image" src="https://github.com/user-attachments/assets/cf45a8ed-25f5-4418-9ecd-35cf2a7c569d" />
-
-- Cliquez sur Import
-
-<img width="1571" height="80" alt="image" src="https://github.com/user-attachments/assets/f1101ba0-8552-4edb-93de-c63ab87d7192" />
-
-- Cliquez sur "Select File"
-
-<img width="516" height="515" alt="image" src="https://github.com/user-attachments/assets/5a663e8c-aaf9-4934-beb7-cb8213d172a6" />
-
-- Selectionnez l'archive contenant l'image de l'api
-
-<img width="810" height="493" alt="image" src="https://github.com/user-attachments/assets/3f9e518e-a62d-4c01-9318-b390128ff2d7" />
-
-- Cliquez sur Upload
-
-<img width="333" height="531" alt="image" src="https://github.com/user-attachments/assets/e41016c4-79f4-4fd5-87ed-c6b246665f34" />
-
-
-### Création d'un container
-- Cliquez sur l'onglet Containers
-
-<img width="264" height="280" alt="image" src="https://github.com/user-attachments/assets/7b155ecd-964f-4cb9-9434-d72e42471135" />
-
-- Cliquez sur "Add a container"
-
-<img width="1581" height="68" alt="image" src="https://github.com/user-attachments/assets/b143448c-805f-4db1-9b81-a8adce988918" />
-
-- Indiquez le nom de votre Container
-
-<img width="401" height="60" alt="image" src="https://github.com/user-attachments/assets/afbf5a14-13fb-4f28-a40e-12bfaeff56e1" />
-
-- Cliquez sur advanced mode
-
-<img width="176" height="194" alt="image" src="https://github.com/user-attachments/assets/2f590fb3-53c5-45fa-8936-6286f16ef8cf" />
-
-- Inserer le nom de l'image
-
-<img width="485" height="106" alt="image" src="https://github.com/user-attachments/assets/7a790a20-b69a-4952-89cf-c43cf76fafa7" />
-
-- Indiquer les ports pour la version http(8080) et https(8081)
-
-<img width="723" height="144" alt="image" src="https://github.com/user-attachments/assets/379d7bd3-5ede-4040-aa42-f8c112e75a2f" />
-
-- Pour le contrôle d'accès , sélectionnez "restricted" 
-
-<img width="1546" height="187" alt="image" src="https://github.com/user-attachments/assets/b74af828-15c1-4274-984f-561253cddc63" />
-
-- Enfin, Cliquez sur "deploy the container"
-
-<img width="213" height="66" alt="image" src="https://github.com/user-attachments/assets/bd71bd3c-67a7-4895-b9ac-e5cf17d38ba8" />
 
 ### Récupèration du certificat
 - Utilisez firefox pour récuperer plus facilement le certificat
@@ -364,11 +246,8 @@ https://10.128.207.62:8081/Automate/GetAllAutomates
 
 # Structure du Projet
 Le projet est composé de plusieurs projets :
-- Un Client IHM en WPF
 - Une API ASP.NET connecté à une base de données en SQLite
 - Un LogicLayer commun au Client et à l'API
-- Une bibliothèque dédiée à la gestion des données coté client
-- Une bibliothèque dédié aux ViewModels qui font le lien entre le logiclayer et l'IHM
 - Des tests unitaires pour les differents projets
 
 ## Structure des données
