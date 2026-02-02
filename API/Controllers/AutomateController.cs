@@ -1,7 +1,9 @@
 ﻿using API.Services.Interfaces;
 using LogicLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -74,18 +76,32 @@ namespace API.Controllers
         /// </summary>
         /// <param name="automate">Automate à exporter.</param>
         /// <returns>Automate créé ou code d'erreur.</returns>
+        [Authorize]
         [HttpPost("ExportAutomate")]
-        public ActionResult<Automate> ExportAutomate([FromBody] Automate automate)
+        public IActionResult ExportAutomate([FromBody] Automate automate)
         {
-            ActionResult<Automate> res;
+            IActionResult res;
             if (automate == null)
                 res = BadRequest("Les données de l’automate sont invalides.");
             else
             {
                 try
                 {
-                    Automate created = service.AddAutomate(automate);
-                    res = CreatedAtAction(nameof(GetAutomateById), new { id = created.Id }, created);
+                    string login = User.FindFirstValue(ClaimTypes.Name);
+                    int id;
+                    if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out id))
+                    {
+                        res = Unauthorized("Id invalide dans le token");
+                    } else
+                    {
+                        automate.Utilisateur = new Utilisateur
+                        {
+                            Id = id,
+                            Login = login
+                        };
+                        Automate created = service.AddAutomate(automate);
+                        res = CreatedAtAction(nameof(GetAutomateById), new { id = created.Id }, created);
+                    }
                 }
                 catch (Exception ex)
                 {

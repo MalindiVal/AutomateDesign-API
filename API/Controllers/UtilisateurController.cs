@@ -35,28 +35,45 @@ namespace API.Controllers
         /// <param name="login">les données utilisateur avec le login et le mot de passe</param>
         /// <returns>Utilisateur avec l'id</returns>
         [HttpPost("Login")]
-        public ActionResult<Utilisateur> Login([FromBody] Utilisateur login)
+        public IActionResult Login([FromBody] Utilisateur login)
         {
-            ActionResult<Utilisateur> res = BadRequest();
-            try
+            IActionResult res = BadRequest();
+            if (login == null || string.IsNullOrWhiteSpace(login.Login) || string.IsNullOrWhiteSpace(login.Mdp))
             {
-                
-                Utilisateur user = service.Login(login);
+                res = BadRequest("Login ou mot de passe manquant");
+            } else
+            {
+                try
+                {
 
+                    Utilisateur user = service.Login(login);
+
+
+                    if (user?.Id != null)
+                    {
+                        var token = tokenService.GenerateToken(user);
+
+                        res = Ok(new
+                        {
+                            token,
+                            user = new
+                            {
+                                user.Id,
+                                user.Login,
+                            }
+                        });
+                    }
+                    else
+                    {
+                        res = Unauthorized("Identifiants incorrects.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    res = StatusCode(500, $"Une erreur interne est survenue lors de la connexion : {ex.Message}");
+                }
+            }
                 
-                if (user?.Id != null)
-                {
-                    res = Ok(user);
-                }
-                else
-                {
-                    res = Unauthorized("Identifiants incorrects.");
-                }
-            }
-            catch (Exception ex)
-            {
-                res = StatusCode(500, $"Une erreur interne est survenue lors de la connexion : {ex.Message}");
-            }
             return res;
         }
 
@@ -66,15 +83,25 @@ namespace API.Controllers
         /// <param name="user">utilisateur à enregistrer</param>
         /// <returns>Utilisateur avec l'id</returns>
         [HttpPost("Register")]
-        public ActionResult<Utilisateur> Register([FromBody]Utilisateur user)
+        public IActionResult Register([FromBody]Utilisateur user)
         {
-            ActionResult<Utilisateur> res = BadRequest();
+            IActionResult res = BadRequest();
             try
             {
                 Utilisateur result = service.Register(user);
                 if (result.Id != null)
                 {
-                    res = Ok(result);
+                    var token = tokenService.GenerateToken(result);
+
+                    res = Ok(new
+                    {
+                        token,
+                        user = new
+                        {
+                            result.Id,
+                            result.Login,
+                        }
+                    });
                 }
             }
             catch (Exception ex)
