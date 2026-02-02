@@ -13,6 +13,7 @@ namespace API.Controllers
     {
         #region Attributs
         private readonly IUtilisateurService service;
+        private ITokenService tokenService;
         #endregion
 
         #region Constructeur
@@ -20,9 +21,10 @@ namespace API.Controllers
         /// Initialise une nouvelle instance du contrôleur <see cref="UtilisateurController"/>.
         /// </summary>
         /// <param name="service">Service applicatif chargé de la logique métier des utilisateurs.</param>
-        public UtilisateurController(IUtilisateurService service)
+        public UtilisateurController(IUtilisateurService service, ITokenService tokenService)
         {
             this.service = service;
+            this.tokenService = tokenService;
         }
         #endregion
 
