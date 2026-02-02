@@ -35,14 +35,25 @@ namespace API.Controllers
         /// Récupère la liste de tous les automates.
         /// </summary>
         /// <returns>Liste des automates ou code d'erreur.</returns>
+        [Authorize]
         [HttpGet("GetAllAutomates")]
-        public ActionResult<List<Automate>> GetAllAutomates()
+        public IActionResult GetAllAutomates()
         {
-            ActionResult<List<Automate>> res = BadRequest();
+            IActionResult res = BadRequest();
             try
             {
-                List<Automate> automates = service.GetAllAutomates();
-                res = Ok(automates);
+                string login = User.FindFirstValue(ClaimTypes.Name);
+                int id;
+                if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out id))
+                {
+                    res = Unauthorized("Id invalide dans le token");
+                }
+                else
+                {
+                    List<Automate> automates = service.GetAllAutomates();
+                    res = Ok(automates);
+                }
+                
             }
             catch (Exception ex)
             {
@@ -55,14 +66,30 @@ namespace API.Controllers
         /// Récupère la liste de tous les automates d'un utilisateur spécifiques.
         /// </summary>
         /// <returns>Liste des automates ou code d'erreur.</returns>
-        [HttpPost("GetAllAutomatesByUser")]
-        public ActionResult<List<Automate>> GetAllAutomatesByUser([FromBody]Utilisateur user)
+        [Authorize]
+        [HttpGet("GetAllAutomatesByUser")]
+        public IActionResult GetAllAutomatesByUser()
         {
-            ActionResult<List<Automate>> res = BadRequest();
+            IActionResult res = BadRequest();
             try
             {
-                List<Automate> automates = service.GetAllAutomatesByUser(user);
-                res = Ok(automates);
+                string login = User.FindFirstValue(ClaimTypes.Name);
+                int id;
+                if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out id))
+                {
+                    res = Unauthorized("Id invalide dans le token");
+                }
+                else
+                {
+                    Utilisateur user  = new Utilisateur
+                    {
+                        Id = id,
+                        Login = login
+                    };
+                    List<Automate> automates = service.GetAllAutomatesByUser(user);
+                    res = Ok(automates);
+                }
+                
             }
             catch (Exception ex)
             {
@@ -153,8 +180,23 @@ namespace API.Controllers
             } else {
                 try
                 {
-                    Automate updated = service.UpdateAutomate(automate);
-                    res = Ok(updated);
+                    string login = User.FindFirstValue(ClaimTypes.Name);
+                    int id;
+                    if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out id))
+                    {
+                        res = Unauthorized("Id invalide dans le token");
+                    }
+                    else
+                    {
+                        automate.Utilisateur = new Utilisateur
+                        {
+                            Id = id,
+                            Login = login
+                        };
+                        Automate updated = service.UpdateAutomate(automate);
+                        res = Ok(updated);
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
