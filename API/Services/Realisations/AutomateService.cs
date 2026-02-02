@@ -47,7 +47,7 @@ namespace API.Services.Realisations
             }
             catch (Exception ex)
             {
-                throw new DAOError("Une erreur s'est produit dans le DAO");
+                throw new DAOError("Une erreur s'est produit dans le DAO : " + ex.Message);
             }
         }
 
@@ -91,7 +91,7 @@ namespace API.Services.Realisations
             }
             catch (Exception ex)
             {
-                throw new DAOError("Une erreur s'est produite lors de la mise à jour de l'automate.");
+                throw new DAOError("Une erreur s'est produite lors de la mise à jour de l'automate : " + ex.Message);
             }
         }
 

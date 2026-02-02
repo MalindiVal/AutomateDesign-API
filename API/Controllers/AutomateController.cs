@@ -42,7 +42,7 @@ namespace API.Controllers
             IActionResult res = BadRequest();
             try
             {
-                string login = User.FindFirstValue(ClaimTypes.Name);
+                string? login = User.FindFirstValue(ClaimTypes.Name);
                 int id;
                 if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out id))
                 {
@@ -73,7 +73,7 @@ namespace API.Controllers
             IActionResult res = BadRequest();
             try
             {
-                string login = User.FindFirstValue(ClaimTypes.Name);
+                string? login = User.FindFirstValue(ClaimTypes.Name);
                 int id;
                 if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out id))
                 {
@@ -114,7 +114,7 @@ namespace API.Controllers
             {
                 try
                 {
-                    string login = User.FindFirstValue(ClaimTypes.Name);
+                    string? login = User.FindFirstValue(ClaimTypes.Name);
                     int id;
                     if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out id))
                     {
@@ -180,7 +180,7 @@ namespace API.Controllers
             } else {
                 try
                 {
-                    string login = User.FindFirstValue(ClaimTypes.Name);
+                    string? login = User.FindFirstValue(ClaimTypes.Name);
                     int id;
                     if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out id))
                     {

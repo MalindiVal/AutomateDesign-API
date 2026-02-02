@@ -7,15 +7,23 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace API.Services.Realisations
 {
+    /// <summary>
+    /// Implémentation JWT de ITokenService
+    /// </summary>
     public class JWTokenService : ITokenService
     {
         private readonly IConfiguration _config;
 
+        /// <summary>
+        /// Constructeur
+        /// </summary>
+        /// <param name="config">Configuration</param>
         public JWTokenService(IConfiguration config)
         {
             _config = config;
         }
 
+        /// <inheritdoc/>
         public string GenerateToken(Utilisateur user)
         {
             if (user == null)
