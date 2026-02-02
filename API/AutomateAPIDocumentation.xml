@@ -1,0 +1,417 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>API</name>
+    </assembly>
+    <members>
+        <member name="T:API.Controllers.AutomateController">
+            <summary>
+            Contrôleur d'API responsable de la gestion des entités <see cref="T:LogicLayer.Automate"/>.
+            Permet la récupération et l'exportation d'automates via les services applicatifs.
+            </summary>
+        </member>
+        <member name="M:API.Controllers.AutomateController.#ctor(API.Services.Interfaces.IAutomateService)">
+            <summary>
+            Initialise une nouvelle instance du contrôleur <see cref="T:API.Controllers.AutomateController"/>.
+            </summary>
+            <param name="service">Service applicatif chargé de la logique métier des automates.</param>
+        </member>
+        <member name="M:API.Controllers.AutomateController.GetAllAutomates">
+            <summary>
+            Récupère la liste de tous les automates.
+            </summary>
+            <returns>Liste des automates ou code d'erreur.</returns>
+        </member>
+        <member name="M:API.Controllers.AutomateController.GetAllAutomatesByUser(LogicLayer.Utilisateur)">
+            <summary>
+            Récupère la liste de tous les automates d'un utilisateur spécifiques.
+            </summary>
+            <returns>Liste des automates ou code d'erreur.</returns>
+        </member>
+        <member name="M:API.Controllers.AutomateController.ExportAutomate(LogicLayer.Automate)">
+            <summary>
+            Exportation d'un automate et retourne la version complète avec son Id.
+            </summary>
+            <param name="automate">Automate à exporter.</param>
+            <returns>Automate créé ou code d'erreur.</returns>
+        </member>
+        <member name="M:API.Controllers.AutomateController.GetAutomateById(System.Int32)">
+            <summary>
+            Récupération d'un automate en fonction de son identifiant.
+            </summary>
+            <param name="id">Identifiant de l'automate.</param>
+            <returns>Automate trouvé ou code d'erreur.</returns>
+        </member>
+        <member name="M:API.Controllers.AutomateController.UpdateAutomate(LogicLayer.Automate)">
+            <summary>
+            Met à jour un automate existant.
+            </summary>
+            <param name="automate">Automate avec les nouvelles données.</param>
+            <returns>Automate mis à jour ou code d'erreur.</returns>
+        </member>
+        <member name="T:API.Controllers.UtilisateurController">
+            <summary>
+            Contrôleur d'API responsable de la gestion des entités <see cref="T:LogicLayer.Utilisateur"/>.
+            </summary>
+        </member>
+        <member name="M:API.Controllers.UtilisateurController.#ctor(API.Services.Interfaces.IUtilisateurService)">
+            <summary>
+            Initialise une nouvelle instance du contrôleur <see cref="T:API.Controllers.UtilisateurController"/>.
+            </summary>
+            <param name="service">Service applicatif chargé de la logique métier des utilisateurs.</param>
+        </member>
+        <member name="M:API.Controllers.UtilisateurController.Login(LogicLayer.Utilisateur)">
+            <summary>
+            Permet de faire une tentative de connexion
+            </summary>
+            <param name="login">les données utilisateur avec le login et le mot de passe</param>
+            <returns>Utilisateur avec l'id</returns>
+        </member>
+        <member name="M:API.Controllers.UtilisateurController.Register(LogicLayer.Utilisateur)">
+            <summary>
+            Permet d'enregistrer un utilisateur
+            </summary>
+            <param name="user">utilisateur à enregistrer</param>
+            <returns>Utilisateur avec l'id</returns>
+        </member>
+        <member name="T:API.Data.BDDConfig">
+            <summary>
+            Représente la configuration de la base de données, chargée à partir d’un fichier JSON.
+            </summary>
+        </member>
+        <member name="P:API.Data.BDDConfig.Source">
+            <summary>
+            Chaîne de connexion à la source de données de la base.
+            </summary>
+        </member>
+        <member name="M:API.Data.BDDConfig.Load(System.String)">
+            <summary>
+            Charge la configuration de la base de données à partir d’un fichier JSON spécifié.
+            </summary>
+            <param name="filePath">
+            Le chemin absolu ou relatif vers le fichier de configuration. 
+            Par défaut, ce chemin est "appsettings.json".
+            </param>
+            <returns>
+            Retourne un objet BDDConfig contenant la chaîne de connexion initialisée.
+            </returns>
+        </member>
+        <member name="T:API.Data.Interfaces.IAutomateDAO">
+            <summary>
+            Définit les opérations d'accès aux données pour les entités <see cref="T:LogicLayer.Automate"/>.
+            Cette interface décrit les méthodes permettant de récupérer, insérer
+            et manipuler les automates stockés dans la base de données.
+            </summary>
+        </member>
+        <member name="M:API.Data.Interfaces.IAutomateDAO.GetAllAutomates">
+            <summary>
+            Récupération des automates
+            </summary>
+            <returns>Liste des automate</returns>
+        </member>
+        <member name="M:API.Data.Interfaces.IAutomateDAO.GetAllAutomatesByUser(LogicLayer.Utilisateur)">
+            <summary>
+            Récupération des automates d'un utilisateur
+            </summary>
+            <returns>Liste des automates</returns>
+        </member>
+        <member name="M:API.Data.Interfaces.IAutomateDAO.GetAutomate(System.Int32)">
+            <summary>
+            Récupération d'un automate
+            </summary>
+            <param name="id">Identifiant unique de l’automate à rechercher.</param>
+            <returns>Automate récupéré</returns>
+        </member>
+        <member name="M:API.Data.Interfaces.IAutomateDAO.AddAutomate(LogicLayer.Automate)">
+            <summary>
+            Insertion d'un automate dans la base de donnée
+            </summary>
+            <param name="automate">Automate à ajouter</param>
+            <returns>Automate avec l'id</returns>
+        </member>
+        <member name="T:API.Data.Interfaces.IUtilisateurDAO">
+            <summary>
+            Interface définissant les opérations d'accès aux données pour les entités <see cref="T:LogicLayer.Utilisateur"/>.
+            </summary>
+        </member>
+        <member name="M:API.Data.Interfaces.IUtilisateurDAO.Register(LogicLayer.Utilisateur)">
+            <summary>
+            Permet d'enregistrer son compte dans la base de données
+            </summary>
+            <param name="user">objet utilisateur crée dans la page d'inscription</param>
+            <returns>Données utilisateur</returns>
+        </member>
+        <member name="M:API.Data.Interfaces.IUtilisateurDAO.GetUserByLogin(System.String)">
+            <summary>
+            Récupère un utilisateur via son login
+            </summary>
+            <param name="login">Le login de l'utilisateur à récupérer</param>
+            <returns>Les données de l'utilisateur</returns>
+        </member>
+        <member name="T:API.Data.Realisations.AutomateDAO">
+            <summary>
+            Implémentation concrète du DAO pour la gestion des entités <see cref="T:LogicLayer.Automate"/>.
+            Cette classe gère les opérations d'accès à la base de données SQLite,
+            notamment la lecture, l'insertion et la reconstruction complète des automates,
+            avec leurs états et transitions.
+            </summary>
+        </member>
+        <member name="M:API.Data.Realisations.AutomateDAO.AddAutomate(LogicLayer.Automate)">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Data.Realisations.AutomateDAO.GetAllAutomates">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Data.Realisations.AutomateDAO.GetAllAutomatesByUser(LogicLayer.Utilisateur)">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Data.Realisations.AutomateDAO.GetAutomate(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:API.Data.Realisations.Extensions.AutomateExtensions">
+            <summary>
+            Extensions pour la gestion des automates.
+            </summary>
+        </member>
+        <member name="M:API.Data.Realisations.Extensions.AutomateExtensions.DeduplicateEtats(LogicLayer.Automate)">
+            <summary>
+            Supprime les états dupliqués dans un automate en s'assurant que chaque état est unique.
+            </summary>
+            <param name="automate">L'automate à vérifier</param>
+        </member>
+        <member name="T:API.Data.Realisations.Readers.AutomateDbReader">
+            <summary>
+            Lecteur de la base de données pour les automates.
+            </summary>
+        </member>
+        <member name="M:API.Data.Realisations.Readers.AutomateDbReader.GetEtatsFromRows(LogicLayer.Automate)">
+            <summary>
+            Récupère les états liés à un automate à partir des lignes de la base de données.
+            </summary>
+            <param name="automate">Automate avec ses propres informations mais sans ses etats</param>
+            <returns>Un dictionnaire des états de l'automate</returns>
+        </member>
+        <member name="M:API.Data.Realisations.Readers.AutomateDbReader.GetTransitionsFromRows(LogicLayer.Automate,System.Collections.Generic.Dictionary{System.Int32,LogicLayer.Etat})">
+            <summary>
+            Récupère les transitions liées à un automate à partir des lignes de la base de données.
+            </summary>
+            <param name="automate">Automate avec ses propres informations mais sans ses transitions</param>
+            <param name="etatDictionary">Dictionnaire d'états</param>
+        </member>
+        <member name="T:API.Data.Realisations.UtilisateurDAO">
+            <summary>
+            Implémentation concrète du DAO pour la gestion des entités <see cref="T:LogicLayer.Utilisateur"/>.
+            Cette classe gère les opérations d'accès à la base de données SQLite
+            </summary>
+        </member>
+        <member name="M:API.Data.Realisations.UtilisateurDAO.GetUserByLogin(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Data.Realisations.UtilisateurDAO.Register(LogicLayer.Utilisateur)">
+            <inheritdoc/>
+        </member>
+        <member name="T:API.Data.Realisations.Writers.AutomateDbWriter">
+            <summary>
+            Fournit des méthodes pour écrire des automates dans la base de données.
+            </summary>
+        </member>
+        <member name="M:API.Data.Realisations.Writers.AutomateDbWriter.CreateAutomate(LogicLayer.Automate)">
+            <summary>
+            Crée un nouvel automate et lui attribue un Id.
+            </summary>
+            <param name="automate"></param>
+        </member>
+        <member name="M:API.Data.Realisations.Writers.AutomateDbWriter.UpdateAutomate(LogicLayer.Automate)">
+            <summary>
+            Met à jour un automate existant et supprime ses états et transitions pour les recréer.
+            </summary>
+            <param name="automate"></param>
+        </member>
+        <member name="M:API.Data.Realisations.Writers.AutomateDbWriter.InsertEtats(LogicLayer.Automate)">
+            <summary>
+            Insère les états liés à l'automate.
+            </summary>
+            <param name="automate"></param>
+        </member>
+        <member name="M:API.Data.Realisations.Writers.AutomateDbWriter.InsertTransitions(LogicLayer.Automate)">
+            <summary>
+            Insère les transitions liées à l'automate.
+            </summary>
+            <param name="automate"></param>
+            <exception cref="T:LogicLayer.DAOError"></exception>
+        </member>
+        <member name="T:API.Data.SQLiteConnector">
+            <summary>
+            Connecteur à la bdd
+            </summary>
+        </member>
+        <member name="M:API.Data.SQLiteConnector.#ctor">
+            <summary>
+            Création de la connection
+            </summary>
+        </member>
+        <member name="M:API.Data.SQLiteConnector.ExecuteQuery(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Exécute une requête
+            </summary>
+            <param name="query">Requête</param>
+            <param name="parameters">Paramètres</param>
+            <returns>La réponse de la bdd</returns>
+        </member>
+        <member name="M:API.Data.SQLiteConnector.ExecuteInsert(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Execute un insert et renvoie l'id de celui-ci
+            </summary>
+            <param name="query">La requête d'insert</param>
+            <param name="parameters">Le dictionnaire des paramètres</param>
+            <returns>L'id de la ligne inséré</returns>
+        </member>
+        <member name="M:API.Data.SQLiteConnector.ExecuteNonQuery(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Exécute une requête de type non-SELECT (INSERT/UPDATE/DELETE)
+            </summary>
+            <param name="query">Requête SQL</param>
+            <param name="parameters">Paramètres</param>
+            <returns>Nombre de lignes affectées</returns>
+        </member>
+        <member name="M:API.Data.SQLiteConnector.Dispose">
+            <summary>
+            Fermeture de la connexion
+            </summary>
+        </member>
+        <member name="T:API.Services.Interfaces.IAutomateService">
+            <summary>
+            Interface définissant les opérations métiers pour la gestion des entités <see cref="T:LogicLayer.Automate"/>.
+            </summary>
+        </member>
+        <member name="M:API.Services.Interfaces.IAutomateService.GetAllAutomates">
+            <summary>
+            Récupération des automates
+            </summary>
+            <returns>Liste des automate</returns>
+            <exception cref="T:LogicLayer.DAOError">Si il y a un probleme avec le DAO</exception>
+        </member>
+        <member name="M:API.Services.Interfaces.IAutomateService.GetAllAutomatesByUser(LogicLayer.Utilisateur)">
+            <summary>
+            Récupération des automates d'un utilisateur
+            </summary>
+            <returns>Liste des automates</returns>
+            <exception cref="T:LogicLayer.DAOError">Si il y a un probleme avec le DAO</exception>
+        </member>
+        <member name="M:API.Services.Interfaces.IAutomateService.GetAutomate(System.Int32)">
+            <summary>
+            Récupération d'un automate
+            </summary>
+            <returns>Automate récupéré</returns>
+            <exception cref="T:LogicLayer.DAOError">Si il y a un probleme avec le DAO</exception>
+        </member>
+        <member name="M:API.Services.Interfaces.IAutomateService.AddAutomate(LogicLayer.Automate)">
+            <summary>
+            Insertion d'un automate dans la base de donnée
+            </summary>
+            <param name="automate">Automate à ajouter</param>
+            <returns>Automate avec l'id</returns>
+            <exception cref="T:LogicLayer.DAOError">Si il y a un probleme avec le DAO</exception>
+        </member>
+        <member name="M:API.Services.Interfaces.IAutomateService.UpdateAutomate(LogicLayer.Automate)">
+            <summary>
+            Mise à jour d'un automate dans la base de donnée
+            </summary>
+            <param name="automate">Automate à modifier</param>
+            <returns>L'automate modifié</returns>
+            <exception cref="T:LogicLayer.DAOError">Si il y a un probleme avec le DAO</exception>
+        </member>
+        <member name="T:API.Services.Interfaces.IHasherPassword">
+            <summary>
+            Interface pour le service de hachage et de vérification des mots de passe.
+            Cette interface définit les méthodes nécessaires pour hacher un mot de passe
+            et pour vérifier si un mot de passe en texte clair correspond à un hash stocké.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:API.Services.Interfaces.IHasherPassword.Hash(System.String)" -->
+        <member name="M:API.Services.Interfaces.IHasherPassword.Verify(System.String,System.String)">
+            <summary>
+            Vérifie si un mot de passe en texte clair correspond à un hash stocké.
+            </summary>
+            <param name="password">Le mot de passe en texte clair à vérifier.</param>
+            <param name="storedHash">Le hash stocké du mot de passe à comparer.</param>
+            <returns>Vrai si le mot de passe correspond au hash, sinon faux.</returns>
+        </member>
+        <member name="T:API.Services.Interfaces.IUtilisateurService">
+            <summary>
+            Interface définissant les opérations métiers pour la gestion des entités <see cref="T:LogicLayer.Utilisateur"/>.
+            </summary>
+        </member>
+        <member name="M:API.Services.Interfaces.IUtilisateurService.Login(LogicLayer.Utilisateur)">
+            <summary>
+            Récupèration des données utilisateurs (SAUF DU MOT DE PASSE)
+            </summary>
+            <param name="user">objet utilisateur crée dans la page de connexion</param>
+            <returns>Données utilisateur</returns>
+        </member>
+        <member name="M:API.Services.Interfaces.IUtilisateurService.Register(LogicLayer.Utilisateur)">
+            <summary>
+            Permet d'enregistrer son compte dans la base de données
+            </summary>
+            <param name="user">objet utilisateur crée dans la page d'inscription</param>
+            <returns>Données utilisateur</returns>
+        </member>
+        <member name="T:API.Services.Realisations.AutomateService">
+            <summary>
+            Implémentation concrète du service métier pour la gestion des entités <see cref="T:LogicLayer.Automate"/>.
+            Cette classe fait le lien entre la couche API et la couche DAO.
+            </summary>
+        </member>
+        <member name="M:API.Services.Realisations.AutomateService.#ctor(API.Data.Interfaces.IAutomateDAO)">
+            <summary>
+            Constructeur
+            </summary>
+            <param name="dao">dao dédié aux automates</param>
+        </member>
+        <member name="M:API.Services.Realisations.AutomateService.AddAutomate(LogicLayer.Automate)">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Services.Realisations.AutomateService.GetAllAutomates">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Services.Realisations.AutomateService.GetAllAutomatesByUser(LogicLayer.Utilisateur)">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Services.Realisations.AutomateService.GetAutomate(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Services.Realisations.AutomateService.UpdateAutomate(LogicLayer.Automate)">
+            <inheritdoc/>
+        </member>
+        <member name="T:API.Services.Realisations.UtilisateurService">
+            <summary>
+            Implémentation de l'interface <see cref="T:API.Services.Interfaces.IUtilisateurService"/>
+            </summary>
+        </member>
+        <member name="M:API.Services.Realisations.UtilisateurService.#ctor(API.Data.Interfaces.IUtilisateurDAO,API.Services.Interfaces.IHasherPassword)">
+            <summary>
+            Constructeur
+            </summary>
+            <param name="dao">Objet permettant d'accéder à la base de données</param>
+            <param name="hasherPassword">Objet s'occupant du hashage de mot de passe</param>
+        </member>
+        <member name="M:API.Services.Realisations.UtilisateurService.Login(LogicLayer.Utilisateur)">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Services.Realisations.UtilisateurService.Register(LogicLayer.Utilisateur)">
+            <inheritdoc/>
+        </member>
+        <member name="T:API.Services.BCryptPasswordHasher">
+            <summary>
+            Implémentation de l'interface IHasherPassword utilisant l'algorithme de hachage BCrypt.
+            Cette classe permet de hacher un mot de passe et de vérifier sa validité en le comparant à un hash stocké.
+            </summary>
+        </member>
+        <member name="M:API.Services.BCryptPasswordHasher.Hash(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:API.Services.BCryptPasswordHasher.Verify(System.String,System.String)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

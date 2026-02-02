@@ -1,0 +1,36 @@
+﻿<Window x:Class="IHM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:IHM"
+        mc:Ignorable="d"
+        Title="AUTOMATEDESIGN" Width="1280" Height="800"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource App.Background}">
+
+    <Grid>
+        <!-- Définition de la barre supérieure -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Définition de la barre latérale -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Initialisation de la barre supérieure -->
+        <views:TopBarView Grid.Row="0" Grid.ColumnSpan="2"/>
+
+        <!-- Initialisation de la barre latérale -->
+        <views:SideBarView Grid.Row="1" Grid.Column="0"/>
+
+        <!-- Zone centrale : VM courant -->
+        <Border Grid.Row="1" Grid.Column="1" Background="{DynamicResource App.Surface}">
+            <ContentControl Content="{Binding CurrentViewModel}"/>
+        </Border>
+    </Grid>
+</Window> 

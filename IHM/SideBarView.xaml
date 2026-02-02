@@ -1,0 +1,163 @@
+﻿<UserControl x:Class="IHM.SideBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IHM"
+             xmlns:conv="clr-namespace:IHM.Converters"
+             xmlns:viewModels="clr-namespace:ViewModels;assembly=ViewModels"
+             mc:Ignorable="d" 
+             Background="{DynamicResource App.Background}">
+
+    <UserControl.Resources>
+        <!-- Convertisseurs -->
+        <conv:IsTypeConverter x:Key="IsType"/>
+        <conv:RefEqualsMultiConverter x:Key="RefEq"/>
+        
+        <!-- Style pour les RadioButton -->
+        <Style x:Key="SidebarRadio" TargetType="RadioButton" BasedOn="{x:Null}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="12">
+                            <ContentPresenter VerticalAlignment="Center" Margin="4"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Survol -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource App.Tertiary}"/>
+                            </Trigger>
+                            <!-- Sélectionné -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource App.Secondary}"/>
+                            </Trigger>
+                            <!-- Désactivé -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Bouton "fermer" pour les onglets -->
+        <Style x:Key="CloseTabIconButton" TargetType="Button">
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" CornerRadius="6"
+                        Background="{TemplateBinding Background}">
+                            <Grid RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality">
+                                <Path Stroke="Black" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              Data="M 8,8 L 20,20 M 20,8 L 8,20" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource App.Tertiary}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource App.Secondary}"/>
+                                <Setter TargetName="bd" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <!-- Bordure droite -->
+    <Border BorderBrush="{DynamicResource App.Divider}" BorderThickness="0,0,1,0">
+
+        <StackPanel Margin="12">
+            <!-- Accueil -->
+            <RadioButton Style="{StaticResource SidebarRadio}" GroupName="SideMenu"
+                         Command="{Binding NavigateHome}" Margin="0,6,0,0"
+             IsChecked="{Binding DataContext.CurrentViewModel,
+                                 RelativeSource={RelativeSource AncestorType=Window},
+                                 Mode=OneWay,
+                                 Converter={StaticResource IsType},
+                                 ConverterParameter={x:Type viewModels:HomeViewModel}}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="pack://application:,,,/images/icone_home.png"
+                           Width="24" Height="24" Stretch="Uniform" Margin="0,0,8,0"/>
+                    <TextBlock Text="Accueil" FontSize="24" VerticalAlignment="Center"/>
+                </StackPanel>
+            </RadioButton>
+
+            <!-- Automates -->
+            <RadioButton Style="{StaticResource SidebarRadio}" GroupName="SideMenu"
+                         Command="{Binding NavigateAutomates}" Margin="0,6,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="pack://application:,,,/images/icone_automates.png"
+                           Width="24" Height="24" Stretch="Uniform" Margin="0,0,8,0"/>
+                    <TextBlock Text="Automates" FontSize="24" VerticalAlignment="Center"/>
+                </StackPanel>
+            </RadioButton>
+            
+            <!-- Séparation -->
+            <Image Source="pack://application:,,,/images/side_bar_sep.png"
+                   Margin="12,12,12,12"/>
+
+            <!-- onglets ouverts -->
+            <ItemsControl ItemsSource="{Binding OpenEditors}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type viewModels:AutomateEditorViewModel}">
+                        <Grid Margin="0,4,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Activer -->
+                            <RadioButton Style="{StaticResource SidebarRadio}"
+                                 GroupName="SideMenu"
+                                 Command="{Binding DataContext.ActivateEditorCommand,
+                                                   RelativeSource={RelativeSource AncestorType=Window}}"
+                                 CommandParameter="{Binding}">
+                                <RadioButton.IsChecked>
+                                    <MultiBinding Mode="OneWay" Converter="{StaticResource RefEq}">
+                                        <!-- VM courant -->
+                                        <Binding Path="DataContext.CurrentViewModel"
+                                               RelativeSource="{RelativeSource AncestorType=Window}"
+                                               Mode="OneWay"/>
+                                        <!-- l’item courant (onglet actuel) -->
+                                        <Binding Mode="OneWay"/>
+                                    </MultiBinding>
+                                </RadioButton.IsChecked>
+                                <TextBlock Text="{Binding Title}"/>
+                            </RadioButton>
+                            
+                            <!-- Fermer -->
+                            <Button Grid.Column="1" Margin="6,0,0,0" Padding="0"
+                                Style="{StaticResource CloseTabIconButton}"
+                                Command="{Binding DataContext.CloseEditorCommand,
+                                                  RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"
+                                AutomationProperties.Name="Fermer l'onglet"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Border>
+</UserControl>

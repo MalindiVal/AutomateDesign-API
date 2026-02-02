@@ -1,0 +1,46 @@
+﻿<Application x:Class="IHM.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:IHM"
+             xmlns:views="clr-namespace:IHM"
+             xmlns:viewModels="clr-namespace:ViewModels;assembly=ViewModels"
+             xmlns:converters="clr-namespace:IHM.Converters">
+
+    <Application.Resources>
+        <!-- Converters globaux -->
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        <converters:CenterEllipseConverter x:Key="CenterEllipseConverter"/>
+
+        <!-- Couleurs de l'application -->
+        <Color x:Key="App.PrimaryColor">#9A0932</Color>
+        <Color x:Key="App.SecondaryColor">#FFC5D1</Color>
+        <Color x:Key="App.TertiaryColor">#FFE0E6</Color>
+        <Color x:Key="App.QuaternaryColor">#FCECEF</Color>
+        <SolidColorBrush x:Key="App.Primary" Color="{StaticResource App.PrimaryColor}"/>
+        <SolidColorBrush x:Key="App.Secondary" Color="{StaticResource App.SecondaryColor}"/>
+        <SolidColorBrush x:Key="App.Tertiary" Color="{StaticResource App.TertiaryColor}"/>
+        <SolidColorBrush x:Key="App.Quaternary" Color="{StaticResource App.QuaternaryColor}"/>
+        <SolidColorBrush x:Key="App.Background" Color="#FFF7F7F7"/>
+        <SolidColorBrush x:Key="App.Surface" Color="White"/>
+        <SolidColorBrush x:Key="App.Divider" Color="#121212"/>
+
+        <!-- DataTemplates pour les vues -->
+        <DataTemplate DataType="{x:Type viewModels:ConnexionViewModel}">
+            <views:ConnexionView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:ImportViewModel}">
+            <views:ImportView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:AutomateEditorViewModel}">
+            <views:AutomateEditorView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
+            <views:HomeView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:ImportAutomateViewModel}">
+            <views:ImportAutomateWindow />
+        </DataTemplate>
+    </Application.Resources>
+</Application>

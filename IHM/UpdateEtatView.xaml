@@ -1,0 +1,25 @@
+﻿<Window x:Class="IHM.UpdateEtatView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mise à jour de l'état"
+        Height="200" Width="350">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <Label Content="Nom :" VerticalAlignment="Center"/>
+            <TextBox Width="220" Height="25" Text="{Binding NomTemp, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="Limite de 25 caractères atteinte" Foreground="Red" FontSize="12" Visibility="{Binding IsNomTooLong, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Boutons -->
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+            <Button Content="Annuler" Width="80" Height="30" Command="{Binding CancelCommand}"/>
+            <Button Content="Supprimer" Width="80" Height="30" Command="{Binding DeleteCommand}"/>
+            <Button Content="Confirmer" Width="80" Height="30" Command="{Binding ConfirmCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

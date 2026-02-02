@@ -1,0 +1,97 @@
+﻿<Window x:Class="IHM.ExportOptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Choisir le type d'export" Width="400"
+        Background="{DynamicResource App.Surface}"
+        WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+        <!-- Style bouton primaire -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{DynamicResource App.Primary}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.92"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Titre -->
+        <TextBlock Grid.Row="0"
+                   Text="Choisissez la méthode d'export :"
+                   FontSize="20" FontWeight="Bold"
+                   Margin="0,0,0,8"/>
+
+        <!-- Zone de saisie du serveur -->
+        <StackPanel Grid.Row="2" Name="NamePanel" >
+            <TextBlock Text="Nom de l'automate :" 
+                       FontWeight="SemiBold" 
+                       HorizontalAlignment="Center"/>
+            <TextBox x:Name="NameTextBox" 
+                     Width="250"
+                     Padding="6"
+                     FontSize="14"
+                     HorizontalAlignment="Center"/>
+            
+        </StackPanel>
+
+        <!-- Boutons -->
+        <StackPanel Grid.Row="3" Orientation="Vertical" VerticalAlignment="Top" Margin="0,12,0,0">
+            <Button Content="Exporter sur le réseau" 
+                    Name="NetworkButton" 
+                    Margin="0,0,0,8"
+                    Style="{StaticResource PrimaryButton}" 
+                    Click="NetworkButton_Click"/>
+
+            <Button Content="Exporter en tant qu'image" 
+                    Name="ImageButton" 
+                    Margin="0,0,0,8"
+                    Style="{StaticResource PrimaryButton}" 
+                    Click="ImageButton_Click"/>
+
+            <Button Content="Exporter en fichiers C#" 
+                    Name="CsharpButton" 
+                    Margin="0,0,0,8"
+                    Style="{StaticResource PrimaryButton}" 
+                    Click="CsharpButton_Click"/>
+
+            <Button Content="Annuler" 
+                    Name="CancelButton" 
+                    Margin="0,0,0,0"
+                    Style="{StaticResource PrimaryButton}" 
+                    Click="CancelButton_Click"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

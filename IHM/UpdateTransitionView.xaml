@@ -1,0 +1,36 @@
+﻿<Window x:Class="IHM.UpdateTransitionView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mise à jour de la transition"
+        Height="200" Width="350">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Champ de texte -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <Label Content="Condition :" VerticalAlignment="Center"/>
+
+            <!-- Champ texte lié à NomTemp -->
+            <TextBox Width="220" Height="25" 
+                     Text="{Binding NomTemp, UpdateSourceTrigger=PropertyChanged}" />
+
+            <!-- Message si 25 caractères atteints -->
+            <TextBlock Text="Limite de 25 caractères atteinte"
+                       Foreground="Red"
+                       FontSize="12"
+                       HorizontalAlignment="Center"
+                       Visibility="{Binding IsNomTooLong, Converter={StaticResource BoolToVisibilityConverter}}" />
+        </StackPanel>
+
+        <!-- Boutons -->
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" >
+            <Button Content="Annuler" Width="80" Height="30" Command="{Binding CancelCommand}"/>
+            <Button Content="Supprimer" Width="80" Height="30" Command="{Binding DeleteCommand}"/>
+            <Button Content="Confirmer" Width="80" Height="30" Command="{Binding ConfirmCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

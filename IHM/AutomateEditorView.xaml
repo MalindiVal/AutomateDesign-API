@@ -1,0 +1,315 @@
+﻿<UserControl x:Class="IHM.AutomateEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IHM"
+             mc:Ignorable="d"
+             KeyDown="HandleKeyPress">
+
+    <UserControl.Resources>
+        <Style x:Key="ToolRadio" TargetType="RadioButton">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="4,0"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="bd" CornerRadius="10"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource App.Tertiary}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource App.Quaternary}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="button" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="root"
+                      RenderOptions.BitmapScalingMode="HighQuality"
+                      RenderTransformOrigin="0.5,0.5">
+                            <Grid.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Grid.RenderTransform>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="root" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.08" ScaleY="1.08"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="root" Property="Opacity" Value="0.85"/>
+                                <Setter TargetName="root" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="root" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- Notification en haut -->
+        <Border x:Name="NotificationBanner"
+                Padding="12,8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Panel.ZIndex="100"
+                Visibility="{Binding NotificationVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="#4CAF50"/>
+                    <!-- Vert par défaut -->
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsError}" Value="True">
+                            <Setter Property="Background" Value="#F44336"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                          Text="{Binding NotificationMessage}"
+                          Foreground="White"
+                          FontSize="14"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"/>
+
+                <Button Grid.Column="1"
+                        Content="✕"
+                        Foreground="White"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="16"
+                        Padding="8,0"
+                        Cursor="Hand"
+                        Click="CloseNotification_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Canvas de dessin -->
+        <Canvas x:Name="EditorCanvas"
+        Background="Transparent"
+        SizeChanged="EditorCanvas_SizeChanged"/>
+
+        <!-- Barre d'icônes en haut à droite -->
+        <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="12"
+                Panel.ZIndex="10" Cursor="">
+<!--
+            <Button Style="{StaticResource button}"
+                Command="{Binding EditCommand}"
+                ToolTip="Modifier"
+                Click="Edit_Click"
+                Margin="0,0,8,0">
+                <Image Source="pack://application:,,,/images/icone_rename.png"
+                   Height="40" Stretch="Uniform"/>
+            </Button>
+-->
+            <Button Style="{StaticResource button}"
+                Command="{Binding SaveCommand}"
+                ToolTip="Enregistrer"
+                Margin="0,0,8,0" Cursor="Hand">
+                <Image Source="pack://application:,,,/images/icone_save.png"
+                   Height="40" Stretch="Uniform"/>
+            </Button>
+
+            <Button Style="{StaticResource button}"
+                Command="{Binding ExportCommand}"
+                ToolTip="Exporter"
+                 Click="Export_Click">
+                <Image Source="pack://application:,,,/images/icone_export.png"
+                   Height="40" Stretch="Uniform"/>
+            </Button>
+        </StackPanel>
+
+        <!-- ItemsControl pour les états -->
+        <ItemsControl ItemsSource="{Binding Etats}" >
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="Transparent"
+                     MouseLeftButtonDown="Canvas_MouseLeftButtonDown"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Canvas.Left" Value="{Binding XOffset}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding YOffset}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid  MouseRightButtonUp="Etat_RightClick" MouseMove="Etat_MouseMove" MouseLeftButtonUp="Etat_MouseLeftButtonUp" >
+                        <Ellipse Width="{Binding EtatRadius}" Height="{Binding EtatRadius}" 
+                 StrokeThickness="2">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Stroke" Value="Black"/>
+                                    <Setter Property="Fill" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
+                                            <Setter Property="Stroke" Value="Gold"/>
+                                            <Setter Property="Effect">
+                                                <Setter.Value>
+                                                    <DropShadowEffect Color="Gold" BlurRadius="15" ShadowDepth="0"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+
+                        <Ellipse Width="{Binding EtatFinalRadius}" Height="{Binding EtatFinalRadius}" Stroke="Black"
+                            Visibility="{Binding EstFinal, Converter={StaticResource BoolToVisibilityConverter}}"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Line X1="{Binding ArrowStartX}" Y1="{Binding ArrowStartY}" X2="{Binding ArrowEndX}" Y2="{Binding ArrowEndY}" Stroke="Black" StrokeThickness="2" Visibility="{Binding EstInitial, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <Line X1="{Binding ArrowEndX}" Y1="{Binding ArrowEndY}" X2="{Binding ArrowEndXMinus10}" Y2="{Binding ArrowEndYMinus5}" Stroke="Black" StrokeThickness="2" Visibility="{Binding EstInitial, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <Line X1="{Binding ArrowEndX}" Y1="{Binding ArrowEndY}" X2="{Binding ArrowEndXMinus10}" Y2="{Binding ArrowEndYPlus5}" Stroke="Black" StrokeThickness="2" Visibility="{Binding EstInitial, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <TextBlock Text="{Binding Nom}" FontSize="16" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="{Binding EtatRadius}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- ItemsControl pour les transitions -->
+        <ItemsControl ItemsSource="{Binding Transitions}" IsHitTestVisible="True">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas IsHitTestVisible="True" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Canvas>
+                        <Path Data="{Binding PathData}"   MouseLeftButtonDown="Transition_LeftClick" Stroke="Transparent" StrokeThickness="14" IsHitTestVisible="True" MouseRightButtonDown="Transition_RightClick" Visibility="{Binding IsNotLoop, Converter={StaticResource BoolToVisibilityConverter}}" Panel.ZIndex="0"/>
+                        <Path Data="{Binding PathData}"  MouseLeftButtonDown="Transition_LeftClick" Stroke="Black" StrokeThickness="2" Visibility="{Binding IsNotLoop, Converter={StaticResource BoolToVisibilityConverter}}" Panel.ZIndex="0"/>
+                        <!-- LOOP : zone cliquable épaisse -->
+                        <Path Data="{Binding LoopPathData}"
+      Stroke="Transparent"
+      StrokeThickness="14"
+      IsHitTestVisible="True"
+      MouseLeftButtonDown="Transition_LeftClick"
+      MouseRightButtonDown="Transition_RightClick"
+      Visibility="{Binding IsLoop, Converter={StaticResource BoolToVisibilityConverter}}"
+      Panel.ZIndex="0"/>
+
+                        <!-- LOOP : affichage visuel -->
+                        <Path Data="{Binding LoopPathData}"
+      Stroke="Black"
+      StrokeThickness="2"
+      Visibility="{Binding IsLoop, Converter={StaticResource BoolToVisibilityConverter}}"
+      Panel.ZIndex="0"/>
+                        <Ellipse Width="14" Height="14"
+         Fill="#F44336"
+         Visibility="{Binding ShowControlPoint, Converter={StaticResource BoolToVisibilityConverter}}"
+         Canvas.Left="{Binding HandleX, Converter={StaticResource CenterEllipseConverter}, ConverterParameter=14}"
+         Canvas.Top="{Binding HandleY, Converter={StaticResource CenterEllipseConverter}, ConverterParameter=14}"
+         MouseLeftButtonDown="ControlPoint_MouseLeftButtonDown"
+         MouseMove="ControlPoint_MouseMove"
+         MouseLeftButtonUp="ControlPoint_MouseLeftButtonUp"
+         Panel.ZIndex="999"/>
+
+                        <Polygon Points="{Binding FlechePoints}" Fill="Black" Visibility="{Binding IsNotLoop, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <Path Data="{Binding LoopPathData}" Stroke="Black" StrokeThickness="2"
+                              Visibility="{Binding IsLoop, Converter={StaticResource BoolToVisibilityConverter}}" 
+                              MouseRightButtonDown="Transition_RightClick"/>
+                        <Polygon Points="{Binding FlechePoints}" Fill="Black" Visibility="{Binding IsLoop, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <TextBlock Text="{Binding Condition}" FontSize="14" Padding="2" Canvas.Left="{Binding XTexte}" Canvas.Top="{Binding YTexte}" MouseRightButtonDown="Transition_RightClick" Background="White" Panel.ZIndex="10">
+                            <TextBlock.RenderTransform>
+                                <RotateTransform Angle="{Binding AngleTexte}" />
+                            </TextBlock.RenderTransform>
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Opacity" Value="0.6"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Opacity" Value="1"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Canvas>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Barre d'outils -->
+        <Border CornerRadius="12" Background="{DynamicResource App.Secondary}" Padding="8"
+                HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,24">
+            <StackPanel Orientation="Horizontal">
+                <RadioButton Style="{StaticResource ToolRadio}" GroupName="Toolbar" Command="{Binding ToolInitialState}"
+                              ToolTip="État initial" x:Name="InitTool">
+                    <Image Source="pack://application:,,,/images/arrow_circle.png" Stretch="Uniform" Height="24"/>
+                </RadioButton>
+
+                <Image Source="pack://application:,,,/images/separation_line.png" Height="35"/>
+
+                <RadioButton Style="{StaticResource ToolRadio}" GroupName="Toolbar" Command="{Binding ToolArrow}"
+                              ToolTip="Transition" x:Name="TransitionTool">
+                    <Image Source="pack://application:,,,/images/arrow.png" Stretch="Uniform" Height="24"/>
+                </RadioButton>
+
+                <Image Source="pack://application:,,,/images/separation_line.png" Height="35"/>
+
+                <RadioButton Style="{StaticResource ToolRadio}" GroupName="Toolbar" Command="{Binding ToolState}"
+                              ToolTip="État" x:Name="NormalTool">
+                    <Image Source="pack://application:,,,/images/circle.png" Stretch="Uniform" Height="24"/>
+                </RadioButton>
+
+                <Image Source="pack://application:,,,/images/separation_line.png" Height="35"/>
+
+                <RadioButton Style="{StaticResource ToolRadio}" GroupName="Toolbar" Command="{Binding ToolFinalState}"
+                              ToolTip="État final">
+                    <Image Source="pack://application:,,,/images/double_circle.png" Stretch="Uniform" Height="24"/>
+                </RadioButton>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

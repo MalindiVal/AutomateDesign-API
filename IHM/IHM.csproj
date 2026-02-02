@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="images\arrow.png" />
+    <None Remove="images\arrow_circle.png" />
+    <None Remove="images\AUTOMATEDESIGN.png" />
+    <None Remove="images\circle.png" />
+    <None Remove="images\double_circle.png" />
+    <None Remove="images\folder_up.png" />
+    <None Remove="images\icone_automates.png" />
+    <None Remove="images\icone_export.png" />
+    <None Remove="images\icone_home.png" />
+    <None Remove="images\icone_rename.png" />
+    <None Remove="images\icone_save.png" />
+    <None Remove="images\logo.png" />
+    <None Remove="images\separation_line.png" />
+    <None Remove="images\side_bar_sep.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LogicLayer\LogicLayer.csproj" />
+    <ProjectReference Include="..\Service\Service.csproj" />
+    <ProjectReference Include="..\ViewModels\ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\arrow.png" />
+    <Resource Include="images\arrow_circle.png" />
+    <Resource Include="images\AUTOMATEDESIGN.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\circle.png" />
+    <Resource Include="images\double_circle.png" />
+    <Resource Include="images\folder_up.png" />
+    <Resource Include="images\icone_automates.png" />
+    <Resource Include="images\icone_export.png" />
+    <Resource Include="images\icone_home.png" />
+    <Resource Include="images\icone_rename.png" />
+    <Resource Include="images\icone_save.png" />
+    <Resource Include="images\logo.png" />
+    <Resource Include="images\separation_line.png" />
+    <Resource Include="images\side_bar_sep.png" />
+  </ItemGroup>
+
+</Project>
