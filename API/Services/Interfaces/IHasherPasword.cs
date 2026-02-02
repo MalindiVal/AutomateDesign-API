@@ -8,7 +8,7 @@
     /// </summary>
     public interface IHasherPassword
     {
-        // <summary>
+        /// <summary>
         /// Hache un mot de passe
         /// Le mot de passe est transformé en un hash sécurisé avec un sel généré automatiquement.
         /// </summary>

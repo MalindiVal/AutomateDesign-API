@@ -14,7 +14,7 @@ namespace LogicLayer
     {
         #region Attributs
         private int? id = null;
-        private string login;
+        private string? login;
         private string? mdp = null;
         #endregion
 
@@ -41,7 +41,7 @@ namespace LogicLayer
         /// <summary>
         /// Login de l'utilisateur
         /// </summary>
-        public string Login { 
+        public string? Login { 
             get => login; 
             set => login = value;
         }

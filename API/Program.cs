@@ -3,7 +3,10 @@ using API.Data.Realisations;
 using API.Services;
 using API.Services.Interfaces;
 using API.Services.Realisations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using SQLitePCL;
+using System.Text;
 
 Batteries.Init();
 
@@ -38,6 +41,24 @@ builder.Services.AddScoped<IAutomateDAO, AutomateDAO>();
 builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
 builder.Services.AddScoped<IUtilisateurDAO, UtilisateurDAO>();
 builder.Services.AddScoped<IHasherPassword, BCryptPasswordHasher>();
+builder.Services.AddScoped<ITokenService, JWTokenService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+            )
+        };
+    });
 
 
 
@@ -48,11 +69,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
 
 app.UseCors(options => options.AllowAnyHeader().AllowAnyHeader().AllowAnyOrigin());
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

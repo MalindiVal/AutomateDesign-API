@@ -135,6 +135,22 @@ namespace LogicLayer
             }
             return res;
         }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(id);
+            hash.Add(nom);
+            hash.Add(etats);
+            hash.Add(transitions);
+            hash.Add(utilisateur);
+            hash.Add(Id);
+            hash.Add(Nom);
+            hash.Add(Etats);
+            hash.Add(Transitions);
+            hash.Add(Utilisateur);
+            return hash.ToHashCode();
+        }
         #endregion
     }
 }
