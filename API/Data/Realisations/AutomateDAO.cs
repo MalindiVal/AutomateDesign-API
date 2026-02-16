@@ -4,7 +4,6 @@ using System.Data;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text;
-using API.Data.Realisations.Writers;
 using API.Data.Realisations.Readers;
 using API.Data.Realisations.Extensions;
 
@@ -24,16 +23,86 @@ namespace API.Data.Realisations
         {
             if (automate.Id != null)
             {
-                    AutomateDbWriter.UpdateAutomate(automate);
+                 this.UpdateAutomate(automate);
             }
             else
             {
-                AutomateDbWriter.CreateAutomate(automate);
+                this.CreateAutomate(automate);
             }
-            AutomateExtensions.DeduplicateEtats(automate);
-            AutomateDbWriter.InsertEtats(automate);
-            AutomateDbWriter.InsertTransitions(automate);
             return automate;
+        }
+
+        public void DeleteAutomate(int id, int idUser)
+        {
+            using (SQLiteConnector connection = new SQLiteConnector())
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>
+                {
+                    { "@Id", id },
+                     { "@IdUser", idUser }
+                };
+
+                connection.ExecuteNonQuery(
+                    "DELETE FROM Automates WHERE Id = @Id AND IdUser = @IdUser", parameters
+                );
+
+                connection.ExecuteNonQuery("DELETE FROM Transitions WHERE IdAutomate = @Id", parameters);
+                connection.ExecuteNonQuery("DELETE FROM Etats WHERE IdAutomate = @Id", parameters);
+
+            }
+        }
+
+        /// <summary>
+        /// Crée un nouvel automate et lui attribue un Id.
+        /// </summary>
+        /// <param name="automate"></param>
+        private void CreateAutomate(Automate automate)
+        {
+            using (SQLiteConnector connection = new SQLiteConnector())
+            {
+                Utilisateur createur = automate.Utilisateur;
+                Dictionary<string, object> parameters = new Dictionary<string, object>
+                {
+                    { "@Nom", automate.Nom },
+                    { "@Id", createur.Id }
+                };
+
+                automate.Id = (int)connection.ExecuteInsert(
+                    "INSERT INTO Automates (Nom,IdUser) VALUES (@Nom,@Id)", parameters
+                );
+            }
+        }
+
+        /// <summary>
+        /// Met à jour un automate existant et supprime ses états et transitions pour les recréer.
+        /// </summary>
+        /// <param name="automate"></param>
+        private void UpdateAutomate(Automate automate)
+        {
+            using (SQLiteConnector connection = new SQLiteConnector())
+            {
+                Utilisateur createur = automate.Utilisateur;
+                Dictionary<string, object> parameters = new Dictionary<string, object>
+                {
+                    { "@Id", automate.Id },
+                    { "@Nom", automate.Nom },
+                     { "@IdUser", createur.Id }
+                };
+
+                DataTable res = connection.ExecuteQuery("Select Id From Automates Where Id = @Id AND IdUser = @IdUser", parameters);
+
+                if (res.Rows.Count > 0)
+                {
+
+                    connection.ExecuteNonQuery(
+                        "UPDATE Automates SET Nom = @Nom WHERE Id = @Id AND IdUser = @IdUser", parameters
+                    );
+
+
+                    connection.ExecuteNonQuery("DELETE FROM Transitions WHERE IdAutomate = @Id", parameters);
+                    connection.ExecuteNonQuery("DELETE FROM Etats WHERE IdAutomate = @Id", parameters);
+                }
+            }
         }
 
         /// <inheritdoc/>
@@ -120,5 +189,7 @@ namespace API.Data.Realisations
             return result;
         }
         #endregion
+        
     }
+
 }
