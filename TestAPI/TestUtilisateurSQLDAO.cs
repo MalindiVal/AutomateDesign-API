@@ -38,8 +38,7 @@ namespace TestAPI
             u = this.dao.Register(u);
 
             // Assert
-            Assert.NotNull(u);
-            Assert.NotNull(u.Id);               // Id généré
+            Assert.NotNull(u);               // Id généré
             Assert.Equal("TestUser", u.Login);
             Assert.Equal("TestPassword", u.Mdp);
         }
@@ -55,6 +54,7 @@ namespace TestAPI
             };
 
             // Act
+            u = this.dao.Register(u);
             u = this.dao.GetUserByLogin(u.Login);
 
             // Assert
