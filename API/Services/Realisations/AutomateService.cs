@@ -80,6 +80,18 @@ namespace API.Services.Realisations
             {
                 Automate res = new Automate();
                 res = this.dao.GetAutomate(id);
+                res.Etats = this.etatDAO.GetEtatsByAutomate(id);
+                
+                if (res.Etats.Count > 0)
+                {
+                    Dictionary<int, Etat> result = new Dictionary<int, Etat>();
+                    foreach (var etat in res.Etats)
+                    {
+                        result[etat.Id] = etat;
+                    }
+                    res.Transitions = this.transitionDAO.GetTransitionsByAutomate(id, result);
+                }
+                
                 return res;
             }
             catch (Exception ex)

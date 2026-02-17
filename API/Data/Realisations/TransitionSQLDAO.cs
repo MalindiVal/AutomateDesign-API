@@ -1,5 +1,6 @@
 ﻿using API.Data.Interfaces;
 using LogicLayer;
+using System.Data;
 
 namespace API.Data.Realisations
 {
@@ -41,6 +42,35 @@ namespace API.Data.Realisations
                     throw new DAOError("Erreur lors de l'insertion d'une transition");
                 }
             }
+        }
+
+        public List<Transition> GetTransitionsByAutomate(int id, Dictionary<int, Etat> etatDictionary)
+        {
+            List<Transition> transitionsList = new List<Transition>();
+            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id } };
+            string query = "SELECT Condition, EtatDebut, EtatFinal, IdAutomate , X , Y FROM Transitions WHERE IdAutomate = @Id";
+            DataTable transitions = connection.ExecuteQuery(query, parameters);
+
+            foreach (DataRow res in transitions.Rows)
+            {
+                int idEtat1 = Convert.ToInt32(res["EtatDebut"]);
+                int idEtat2 = Convert.ToInt32(res["EtatFinal"]);
+
+                if (etatDictionary.ContainsKey(idEtat1) && etatDictionary.ContainsKey(idEtat2))
+                {
+                    Transition t = new Transition(etatDictionary[idEtat1], etatDictionary[idEtat2])
+                    {
+                        Condition = res["Condition"].ToString(),
+                        ManualControlX = res["X"] != DBNull.Value ? Convert.ToDouble(res["X"]) : (double?)null,
+                        ManualControlY = res["Y"] != DBNull.Value ? Convert.ToDouble(res["Y"]) : (double?)null
+                    };
+
+                    transitionsList.Add(t);
+
+                }
+            }
+
+            return transitionsList;
         }
     }
 }

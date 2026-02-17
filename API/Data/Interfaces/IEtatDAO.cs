@@ -6,6 +6,8 @@ namespace API.Data.Interfaces
     {
         void InsertEtats(Automate automate);
 
+        public List<Etat> GetEtatsByAutomate(int id);
+
 
     }
 }
