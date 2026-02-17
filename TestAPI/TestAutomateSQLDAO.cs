@@ -80,7 +80,7 @@ namespace TestAPI
         /// Récupération des données d'un automate depuis la base de données
         /// </summary>
         [Fact]
-        public void TestRecuppérationAutomateParId()
+        public void TestGetAutomateById()
         {
             CreationAutomateTest();
 
