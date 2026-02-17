@@ -36,12 +36,15 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped<IAutomateService, AutomateService>();
-builder.Services.AddScoped<IAutomateDAO, AutomateDAO>();
+builder.Services.AddScoped<IEtatDAO, EtatSQLDAO>();
+builder.Services.AddScoped<ITransitionDAO, TransitionSQLDAO>();
+builder.Services.AddScoped<IAutomateDAO, AutomateSQLDAO>();
 
 builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
-builder.Services.AddScoped<IUtilisateurDAO, UtilisateurDAO>();
+builder.Services.AddScoped<IUtilisateurDAO, UtilisateurSQLDAO>();
 builder.Services.AddScoped<IHasherPassword, BCryptPasswordHasher>();
 builder.Services.AddScoped<ITokenService, JWTokenService>();
+builder.Services.AddScoped<IBDDConnection, SQLiteConnector>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
