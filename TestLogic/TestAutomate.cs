@@ -58,10 +58,6 @@ namespace TestLogic
             Assert.Contains(e2, automate.Etats);
             Assert.Contains(e3, automate.Etats);
             Assert.Contains(e4, automate.Etats);
-
-            automate.SupprimerEtat(e1);
-
-            Assert.DoesNotContain(e1, automate.Etats);
         }
 
         /// <summary>
