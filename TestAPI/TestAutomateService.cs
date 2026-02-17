@@ -164,6 +164,20 @@ namespace TestAPI
         }
             };
 
+            etatDaoMock.Setup(e => e.GetEtatsByAutomate(10))
+    .Returns(new List<Etat>
+    {
+        new Etat { Id = 1, Nom = "Etat1" },
+        new Etat { Id = 2, Nom = "Etat2" }
+    });
+
+            transitionDaoMock.Setup(t => t.GetTransitionsByAutomate(10, It.IsAny<Dictionary<int, Etat>>()))
+                .Returns(new List<Transition>
+                {
+        new Transition(new Etat(), new Etat()) { Condition = "Test" }
+                });
+
+
             dao.Setup(x => x.GetAutomate(10)).Returns(automate);
 
             var result = automateService.GetAutomate(10);

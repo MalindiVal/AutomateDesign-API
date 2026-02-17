@@ -167,6 +167,13 @@
             <param name="automate"></param>
             <exception cref="T:LogicLayer.DAOError"></exception>
         </member>
+        <member name="M:API.Data.Interfaces.ITransitionDAO.GetTransitionsByAutomate(System.Int32,System.Collections.Generic.Dictionary{System.Int32,LogicLayer.Etat})">
+            <summary>
+            Récupère les transitions liées à un automate à partir des lignes de la base de données.
+            </summary>
+            <param name="id">Automate avec ses propres informations mais sans ses transitions</param>
+            <param name="etatDictionary">Dictionnaire d'états</param>
+        </member>
         <member name="T:API.Data.Interfaces.IUtilisateurDAO">
             <summary>
             Interface définissant les opérations d'accès aux données pour les entités <see cref="T:LogicLayer.Utilisateur"/>.
@@ -217,20 +224,6 @@
         </member>
         <member name="M:API.Data.Realisations.AutomateSQLDAO.GetAutomate(System.Int32)">
             <inheritdoc/>
-        </member>
-        <member name="M:API.Data.Realisations.AutomateSQLDAO.GetEtatsFromRows(LogicLayer.Automate)">
-            <summary>
-            Récupère les états liés à un automate à partir des lignes de la base de données.
-            </summary>
-            <param name="automate">Automate avec ses propres informations mais sans ses etats</param>
-            <returns>Un dictionnaire des états de l'automate</returns>
-        </member>
-        <member name="M:API.Data.Realisations.AutomateSQLDAO.GetTransitionsFromRows(LogicLayer.Automate,System.Collections.Generic.Dictionary{System.Int32,LogicLayer.Etat})">
-            <summary>
-            Récupère les transitions liées à un automate à partir des lignes de la base de données.
-            </summary>
-            <param name="automate">Automate avec ses propres informations mais sans ses transitions</param>
-            <param name="etatDictionary">Dictionnaire d'états</param>
         </member>
         <member name="T:API.Data.Realisations.SQLiteConnector">
             <summary>

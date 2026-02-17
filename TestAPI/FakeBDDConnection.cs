@@ -57,12 +57,12 @@ namespace TestAPI
 
             if (query.Contains("INSERT INTO Etats"))
             {
-                _etatsTable.Rows.Add(id, parameters["@Nom"], parameters["@Id"], parameters["@X"], parameters["@Y"], parameters["@Initial"], parameters["@Final"]);
+                _etatsTable.Rows.Add(id, parameters["@NomEtat"], parameters["@Id"], parameters["@X"], parameters["@Y"], parameters["@Initial"], parameters["@Final"]);
             }
 
             if (query.Contains("INSERT INTO Transitions"))
             {
-                _transitionsTable.Rows.Add(parameters["@Condition"], parameters["@Debut"], parameters["@Final"], parameters["@Id"], parameters["@X"], parameters["@Y"]);
+                _transitionsTable.Rows.Add(parameters["@NomTransition"], parameters["@Debut"], parameters["@Final"], parameters["@Id"], parameters["@X"], parameters["@Y"]);
             }
 
 
