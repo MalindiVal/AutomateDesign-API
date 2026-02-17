@@ -39,10 +39,9 @@ namespace TestAPI
             Assert.Contains(e2, this.test.Etats);
             Assert.Contains(e3, this.test.Etats);
             Assert.Contains(e4, this.test.Etats);
-
+            Random r = new Random();
             foreach (Etat etat in this.test.Etats)
             {
-                Random r = new Random();
                 etat.Position.X = r.Next();
                 etat.Position.Y = r.Next();
             }
