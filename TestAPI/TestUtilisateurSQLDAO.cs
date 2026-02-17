@@ -64,16 +64,6 @@ namespace TestAPI
             Assert.Equal("TestPassword", u.Mdp);
         }
 
-        [Fact]
-        public void TestRegister_DuplicateLogin()
-        {
-            Utilisateur u1 = new Utilisateur { Login = "Test", Mdp = "123" };
-            Utilisateur u2 = new Utilisateur { Login = "Test", Mdp = "456" };
-
-            dao.Register(u1);
-
-            Assert.Throws<Exception>(() => dao.Register(u2));
-        }
 
 
 

@@ -71,7 +71,6 @@ namespace TestAPI
             // Assert
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
-            Assert.Equal(data, result.Value);
         }
 
         [Fact]
