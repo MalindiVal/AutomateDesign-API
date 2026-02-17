@@ -144,9 +144,9 @@ namespace API.Controllers
         /// <param name="id">Identifiant de l'automate.</param>
         /// <returns>Automate trouvé ou code d'erreur.</returns>
         [HttpGet("GetAutomateById")]
-        public ActionResult<Automate> GetAutomateById(int id)
+        public IActionResult GetAutomateById(int id)
         {
-            ActionResult<Automate> res;
+            IActionResult res = BadRequest();
             try
             {
                 Automate? automate = service.GetAutomate(id);
@@ -170,9 +170,9 @@ namespace API.Controllers
         /// <param name="automate">Automate avec les nouvelles données.</param>
         /// <returns>Automate mis à jour ou code d'erreur.</returns>
         [HttpPut("UpdateAutomate")]
-        public ActionResult<Automate> UpdateAutomate([FromBody] Automate automate)
+        public IActionResult UpdateAutomate([FromBody] Automate automate)
         {
-            ActionResult<Automate> res;
+            IActionResult res;
 
             if (automate == null)
             {

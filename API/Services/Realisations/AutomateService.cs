@@ -12,14 +12,18 @@ namespace API.Services.Realisations
     public class AutomateService : IAutomateService
     {
         private IAutomateDAO dao;
+        private IEtatDAO etatDAO;
+        private ITransitionDAO transitionDAO;
 
         /// <summary>
         /// Constructeur
         /// </summary>
         /// <param name="dao">dao dédié aux automates</param>
-        public AutomateService(IAutomateDAO dao)
+        public AutomateService(IAutomateDAO dao, IEtatDAO etatDAO, ITransitionDAO transitionDAO)
         {
             this.dao = dao;
+            this.etatDAO = etatDAO;
+            this.transitionDAO = transitionDAO;
         }
 
         /// <inheritdoc/>
@@ -28,6 +32,9 @@ namespace API.Services.Realisations
             try
             {
                 Automate res = this.dao.AddAutomate(automate);
+                this.DeduplicateEtats(res);
+                etatDAO.InsertEtats(res);
+                transitionDAO.InsertTransitions(res);
                 return res;
             }
             catch (Exception ex)
@@ -73,6 +80,18 @@ namespace API.Services.Realisations
             {
                 Automate res = new Automate();
                 res = this.dao.GetAutomate(id);
+                res.Etats = this.etatDAO.GetEtatsByAutomate(id);
+                
+                if (res.Etats.Count > 0)
+                {
+                    Dictionary<int, Etat> result = new Dictionary<int, Etat>();
+                    foreach (var etat in res.Etats)
+                    {
+                        result[etat.Id] = etat;
+                    }
+                    res.Transitions = this.transitionDAO.GetTransitionsByAutomate(id, result);
+                }
+                
                 return res;
             }
             catch (Exception ex)
@@ -93,6 +112,47 @@ namespace API.Services.Realisations
             {
                 throw new DAOError("Une erreur s'est produite lors de la mise à jour de l'automate : " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Supprime les états dupliqués dans un automate en s'assurant que chaque état est unique.
+        /// </summary>
+        /// <param name="automate">L'automate à vérifier</param>
+        private void DeduplicateEtats(Automate automate)
+        {
+            foreach (var transition in automate.Transitions)
+            {
+                if (!automate.Etats.Contains(transition.EtatDebut))
+                    automate.Etats.Add(transition.EtatDebut);
+                if (!automate.Etats.Contains(transition.EtatFinal))
+                    automate.Etats.Add(transition.EtatFinal);
+            }
+
+            var uniqueEtats = new HashSet<Etat>();
+            var etatMap = new Dictionary<Etat, Etat>();
+
+            foreach (var etat in automate.Etats)
+            {
+                if (uniqueEtats.TryGetValue(etat, out var existing))
+                {
+                    etatMap[etat] = existing;
+                }
+                else
+                {
+                    uniqueEtats.Add(etat);
+                    etatMap[etat] = etat;
+                }
+            }
+
+            foreach (var transition in automate.Transitions)
+            {
+                if (etatMap.TryGetValue(transition.EtatDebut, out var debut))
+                    transition.EtatDebut = debut;
+                if (etatMap.TryGetValue(transition.EtatFinal, out var fin))
+                    transition.EtatFinal = fin;
+            }
+
+            automate.Etats = uniqueEtats.ToList();
         }
 
     }

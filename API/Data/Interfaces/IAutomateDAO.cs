@@ -35,5 +35,7 @@ namespace API.Data.Interfaces
         /// <returns>Automate avec l'id</returns>
         Automate AddAutomate(Automate automate);
 
+        void DeleteAutomate(int id, int idUser);
+
     }
 }

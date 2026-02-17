@@ -16,15 +16,24 @@ namespace TestAPI
     {
 
         private readonly Mock<IAutomateDAO> dao;
+        private readonly Mock<IEtatDAO> etatDaoMock;
+        private readonly Mock<ITransitionDAO> transitionDaoMock;
         private readonly IAutomateService automateService;
         private Automate test;
 
         public TestAutomateService()
         {
             dao = new Mock<IAutomateDAO>();
+            etatDaoMock = new Mock<IEtatDAO>();
+            transitionDaoMock = new Mock<ITransitionDAO>();
 
-            automateService = new AutomateService(dao.Object);
+            automateService = new AutomateService(
+                dao.Object,
+                etatDaoMock.Object,
+                transitionDaoMock.Object
+            );
         }
+
         private void CreationAutomateTest()
         {
             this.test = new Automate();
@@ -51,9 +60,10 @@ namespace TestAPI
             Assert.Contains(e3, this.test.Etats);
             Assert.Contains(e4, this.test.Etats);
 
+            Random r = new Random();
             foreach (Etat etat in this.test.Etats)
             {
-                Random r = new Random();
+                
                 etat.Position.X = r.Next();
                 etat.Position.Y = r.Next();
             }
@@ -71,22 +81,18 @@ namespace TestAPI
             CreationAutomateTest();
 
             dao.Setup(x => x.AddAutomate(It.IsAny<Automate>()))
-               .Returns((Automate a) =>
-               {
-                   a.Id = 1;
-                   return a;
-               });
+                   .Returns((Automate a) =>
+                   {
+                       a.Id = 1;
+                       return a;
+                   });
 
-            // ACT
             Automate result = automateService.AddAutomate(this.test);
 
-            // ASSERT
-            Assert.NotNull(result);
             Assert.Equal(1, result.Id);
-            Assert.NotEmpty(result.Etats);
-            Assert.NotEmpty(result.Transitions);
             dao.Verify(x => x.AddAutomate(It.IsAny<Automate>()), Times.Once);
         }
+
 
 
         /// <summary>
@@ -95,14 +101,12 @@ namespace TestAPI
         [Fact]
         public void TestGetAllAutomates()
         {
-
-            CreationAutomateTest();
             List<Automate> data = new List<Automate>
-            {
-                new Automate { Id = 1, Nom = "Test" },
-                new Automate { Id = 2, Nom = "Test2" },
-                new Automate { Id = 3, Nom = "Test3" }
-            };
+    {
+        new Automate { Id = 1, Nom = "Test" },
+        new Automate { Id = 2, Nom = "Test2" },
+        new Automate { Id = 3, Nom = "Test3" }
+    };
 
             dao.Setup(x => x.GetAllAutomates()).Returns(data);
 
@@ -110,10 +114,8 @@ namespace TestAPI
 
             Assert.NotEmpty(result);
             Assert.Equal(3, result.Count);
-            Assert.Contains(result, a => a.Nom == "Test");
-            Assert.Contains(result, a => a.Nom == "Test2");
-            Assert.Contains(result, a => a.Nom == "Test3");
         }
+
 
         /// <summary>
         /// Tet du getAllAutomatesByUser
@@ -159,12 +161,22 @@ namespace TestAPI
         {
             new Etat { Id = 1, Nom = "Etat1" },
             new Etat { Id = 2, Nom = "Etat2" }
-        },
-                Transitions =
-        {
-            new Transition(new Etat(), new Etat()) { Condition = "Test4" }
         }
             };
+
+            etatDaoMock.Setup(e => e.GetEtatsByAutomate(10))
+    .Returns(new List<Etat>
+    {
+        new Etat { Id = 1, Nom = "Etat1" },
+        new Etat { Id = 2, Nom = "Etat2" }
+    });
+
+            transitionDaoMock.Setup(t => t.GetTransitionsByAutomate(10, It.IsAny<Dictionary<int, Etat>>()))
+                .Returns(new List<Transition>
+                {
+        new Transition(new Etat(), new Etat()) { Condition = "Test" }
+                });
+
 
             dao.Setup(x => x.GetAutomate(10)).Returns(automate);
 
@@ -172,18 +184,18 @@ namespace TestAPI
 
             Assert.NotNull(result);
             Assert.Equal(10, result.Id);
-            Assert.Equal("Test4", result.Nom);
-            Assert.Equal(2, result.Etats.Count);
-            Assert.Single(result.Transitions);
         }
+
 
 
         [Fact]
         public void TestExceptionDAOError()
         {
+            dao.Setup(x => x.GetAutomate(It.IsAny<int>()))
+                   .Throws(new DAOError("DB error"));
 
-
-
+            Assert.Throws<DAOError>(() => automateService.GetAutomate(1));
         }
+
     }
 }

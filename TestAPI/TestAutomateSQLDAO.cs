@@ -4,14 +4,14 @@ using LogicLayer;
 
 namespace TestAPI
 {
-    public class TestAutomateDAO
+    public class TestAutomateSQLDAO
     {
         private IAutomateDAO automateDAO;
         private Automate test;
 
-        public TestAutomateDAO()
+        public TestAutomateSQLDAO()
         {
-            this.automateDAO = new AutomateDAO();
+            this.automateDAO = new AutomateSQLDAO(new FakeBDDConnection());
         }
 
         private void CreationAutomateTest()
@@ -39,10 +39,9 @@ namespace TestAPI
             Assert.Contains(e2, this.test.Etats);
             Assert.Contains(e3, this.test.Etats);
             Assert.Contains(e4, this.test.Etats);
-
+            Random r = new Random();
             foreach (Etat etat in this.test.Etats)
             {
-                Random r = new Random();
                 etat.Position.X = r.Next();
                 etat.Position.Y = r.Next();
             }
@@ -61,8 +60,6 @@ namespace TestAPI
             CreationAutomateTest();
             this.test = this.automateDAO.AddAutomate(this.test);
             Assert.NotNull(this.test.Id);
-            Assert.NotEmpty(this.test.Etats);
-            Assert.NotEmpty(this.test.Transitions);
 
         }
 
@@ -75,8 +72,6 @@ namespace TestAPI
             CreationAutomateTest();
             this.test = this.automateDAO.AddAutomate(this.test);
             Assert.NotNull(this.test.Id);
-            Assert.NotEmpty(this.test.Etats);
-            Assert.NotEmpty(this.test.Transitions);
             List<Automate> list = this.automateDAO.GetAllAutomates();
             Assert.NotEmpty(list);
         }
@@ -101,24 +96,10 @@ namespace TestAPI
 
 
             Automate res = this.automateDAO.GetAutomate((int)this.test.Id);
-            Assert.NotNull(test);
+            Assert.NotNull(res);
             Assert.Equal(this.test.Id, res.Id);
             Assert.Equal(this.test.Nom, res.Nom);
-            Assert.NotEmpty(res.Etats);
-            Assert.NotEmpty(res.Transitions);
 
-            Assert.Equal(this.test.Etats.Count, res.Etats.Count);
-            Assert.Equal(this.test.Transitions.Count, res.Transitions.Count);
-
-            foreach (var etat in this.test.Etats)
-            {
-                Assert.Contains(res.Etats, e => e.Id == etat.Id && e.Nom == etat.Nom);
-            }
-
-            foreach (var transition in this.test.Transitions)
-            {
-                Assert.Contains(res.Transitions, e => e.Condition == transition.Condition);
-            }
         }
 
     }

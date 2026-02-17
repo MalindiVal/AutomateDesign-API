@@ -1,13 +1,14 @@
-﻿using LogicLayer;
+﻿using API.Data.Interfaces;
+using LogicLayer;
 using Microsoft.Data.Sqlite;
 using System.Data;
 
-namespace API.Data
+namespace API.Data.Realisations
 {
     /// <summary>
     /// Connecteur à la bdd
     /// </summary>
-    public class SQLiteConnector : IDisposable
+    public class SQLiteConnector : IDisposable, IBDDConnection
     {
         #region Attributs
         //Connection
@@ -98,13 +99,12 @@ namespace API.Data
             return id;
         }
 
-
         /// <summary>
-        /// Exécute une requête de type non-SELECT (INSERT/UPDATE/DELETE)
+        /// 
         /// </summary>
-        /// <param name="query">Requête SQL</param>
-        /// <param name="parameters">Paramètres</param>
-        /// <returns>Nombre de lignes affectées</returns>
+        /// <param name="query"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public int ExecuteNonQuery(string query, Dictionary<string, object> parameters = null)
         {
             this.connection.Open();
