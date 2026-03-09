@@ -1,6 +1,10 @@
 # AutomateDesign
 AutomateDesign est un projet qui consiste en la création d'un schéma d'automate avec ses états et ses transitions
 
+Ce projet est lié à deux projets clients :
+- Un en WPF : https://github.com/MalindiVal/AutomateDesign-Client
+- Un en React/Expo : https://github.com/MalindiVal/AutomateDesign-ReactClient
+
 # Objectif du projet
 Le but d’AutomateDesign est de fournir un outil intuitif permettant de :
 - Concevoir visuellement des automates à états finis
