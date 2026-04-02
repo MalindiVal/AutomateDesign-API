@@ -206,6 +206,32 @@ namespace API.Controllers
 
             return res;
         }
+
+        [Authorize]
+        [HttpDelete("DeleteAutomate")]
+        public IActionResult DeleteRappport(int id)
+        {
+            IActionResult res = BadRequest();
+            try
+            {
+                int idUser;
+                if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out idUser))
+                {
+                    res = Unauthorized("Id invalide dans le token");
+                }
+                else
+                {
+                    service.DeleteAutomate(id, idUser);
+                    res = Ok();
+                }
+            } catch (DAOError d)
+            {
+                res = BadRequest(d.Message);
+            }
+
+            return res;
+            
+        }
         #endregion
     }
 }

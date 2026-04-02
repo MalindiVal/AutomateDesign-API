@@ -43,6 +43,17 @@ namespace API.Services.Realisations
             }
         }
 
+        public void DeleteAutomate(int id, int idUser)
+        {
+            try
+            {
+                this.dao.DeleteAutomate(id, idUser);
+            } catch
+            {
+                throw new DAOError("Une erreur s'est produit lors de la suppression de l'automate");
+            }
+        }
+        
         /// <inheritdoc/>
         public List<Automate> GetAllAutomates()
         {
