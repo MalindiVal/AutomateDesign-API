@@ -1,0 +1,85 @@
+# Pipeline CI de l'API AutomateDesign
+# 1. Restauration, compilation et tests unitaires (TestLogic + TestAPI) avec couverture de code
+# 2. Construction de l'image Docker de l'API (uniquement si les tests passent)
+
+name: CI
+
+on:
+  push:
+    branches: [ "main", "IsolementDAO" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_VERSION: 8.0.x
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-test:
+    name: Build & Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restauration des dépendances
+        run: dotnet restore AutomateDesign.sln
+
+      - name: Compilation
+        run: dotnet build AutomateDesign.sln --no-restore --configuration Release
+
+      - name: Tests unitaires
+        run: >
+          dotnet test AutomateDesign.sln
+          --no-build --configuration Release
+          --verbosity normal
+          --logger "trx;LogFilePrefix=results"
+          --collect:"XPlat Code Coverage"
+          --results-directory ./TestResults
+
+      - name: Publication des résultats de tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults/
+          retention-days: 14
+
+  docker:
+    name: Build de l'image Docker
+    runs-on: ubuntu-latest
+    needs: build-test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Construction de l'image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: API/Dockerfile
+          push: false
+          tags: automateapi:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

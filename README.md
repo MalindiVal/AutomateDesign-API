@@ -1,11 +1,13 @@
-# AutomateDesign
+# AutomateDesign-API
+[![CI](https://github.com/MalindiVal/AutomateDesign-API/actions/workflows/ci.yml/badge.svg)](https://github.com/MalindiVal/AutomateDesign-API/actions/workflows/ci.yml)
+
 AutomateDesign est un projet permettant la création et la visualisation d’un schéma d’automate, avec ses états et transitions. L’objectif est de faciliter la conception, l’étude et la compréhension des automates finis.
 
-Ce projet est lié à deux clients :
+Ce dépôt contient l'**API** du projet. Elle est utilisée par deux clients :
 - Client WPF (SAE IUT Dijon) : [AutomateDesign-Client](https://github.com/MalindiVal/AutomateDesign-Client)
 - Client React/Expo : [AutomateDesign-ReactClient](https://github.com/MalindiVal/AutomateDesign-ReactClient)
 
-💡 Note : Les deux clients communiquent avec une API dédiée pour gérer la logique, le stockage et les interactions avec les automates : AutomateDesign-API
+💡 Note : Les deux clients communiquent avec cette API pour gérer la logique, le stockage et les interactions avec les automates.
 
 # Objectif du projet
 Le but d’AutomateDesign est de fournir un outil intuitif permettant de :
@@ -19,17 +21,27 @@ Ce projet met en œuvre plusieurs technologies modernes de développement .NET (
 # Fonctionnalités
 - Gestion centralisée des automates via une base SQLite
 - Endpoints RESTful pour interagir avec les données
+- Authentification par jeton JWT (mots de passe hachés avec BCrypt)
 - Sérialisation/désérialisation des modèles
+- Documentation Swagger (en environnement de développement)
 - Hébergement compatible Docker
-### Contrôleur principal : AutomateController
-- /GetAllAutomates [GET] : Récupèration des automates présents dans la base de données
-- /GetAllAutomatesByUser [Post] : Récupèration des automates crées par un utilisateur présents dans la base de données
-- /ExportAutomate [POST] : Exportation d'un Automate
-- /UpdateAutomate [PUT] : Mise à jour d'un Automate
-- /GetAutomateById?id=[Insérer identifiant Automate] [GET] : Récuperartion d'un automate en fonction d'un id
-### Contrôleur des utilisateurs : UtilisateurController
-- /Login [POST] : Récupèration des automates présents dans la base de données
-- /Register [POST] : Exportation d'un Automates
+
+### Contrôleur principal : AutomateController (`/Automate`)
+| Route | Méthode | Authentification | Description |
+|---|---|---|---|
+| `/Automate/GetAllAutomates` | GET | JWT | Récupération de tous les automates présents dans la base de données |
+| `/Automate/GetAllAutomatesByUser` | GET | JWT | Récupération des automates créés par l'utilisateur identifié par le jeton |
+| `/Automate/ExportAutomate` | POST | JWT | Exportation (enregistrement) d'un automate |
+| `/Automate/UpdateAutomate` | PUT | — | Mise à jour d'un automate |
+| `/Automate/GetAutomateById?id={id}` | GET | — | Récupération d'un automate en fonction de son identifiant |
+
+### Contrôleur des utilisateurs : UtilisateurController (`/Utilisateur`)
+| Route | Méthode | Authentification | Description |
+|---|---|---|---|
+| `/Utilisateur/Login` | POST | — | Connexion d'un utilisateur, renvoie un jeton JWT |
+| `/Utilisateur/Register` | POST | — | Création d'un compte utilisateur |
+
+Les routes protégées attendent l'en-tête `Authorization: Bearer <jeton>`. Les paramètres du jeton (clé, émetteur, audience, durée) se trouvent dans la section `Jwt` du fichier `API/appsettings.json`.
 
 # Installation & exécution
 ## Prérequis
@@ -41,14 +53,20 @@ Ce projet met en œuvre plusieurs technologies modernes de développement .NET (
 - Ouvrez Powershell sur le dossier de votre choix
 - Cloner le projet
 ```
-git clone https://github.com/dept-info-iut-dijon/S5_ModernTech_AutomateDesign.git
+git clone https://github.com/MalindiVal/AutomateDesign-API.git
 ```
 
-## Lancer l’API
-- Cliquez sur le dossier Client
-  
-<img width="196" height="259" alt="image" src="https://github.com/user-attachments/assets/5d851ae1-3668-4075-97e8-f9fb870d020b" />
+## Lancer l’API en ligne de commande
+```
+dotnet run --project API
+```
 
+## Lancer les tests
+```
+dotnet test AutomateDesign.sln
+```
+
+## Lancer l’API depuis Visual Studio
 - Cliquez sur la solution AutomateDesign.sln
 
 <img width="252" height="429" alt="image" src="https://github.com/user-attachments/assets/ce6f62aa-d0bb-426e-a946-7d1de3d5895c" />
@@ -251,10 +269,17 @@ https://10.128.207.62:8081/Automate/GetAllAutomates
 
 
 # Structure du Projet
-Le projet est composé de plusieurs projets :
-- Une API ASP.NET connecté à une base de données en SQLite
-- Un LogicLayer commun au Client et à l'API
-- Des tests unitaires pour les differents projets
+La solution `AutomateDesign.sln` est composée de plusieurs projets :
+- **API** : API ASP.NET Core connectée à une base de données SQLite
+  - `Controllers` : points d'entrée HTTP (`AutomateController`, `UtilisateurController`)
+  - `Services` : logique applicative (automates, utilisateurs, hachage BCrypt, génération des jetons JWT)
+  - `Data/Interfaces` : contrats des DAO (`IAutomateDAO`, `IEtatDAO`, `ITransitionDAO`, `IUtilisateurDAO`) et de la connexion (`IBDDConnection`)
+  - `Data/Realisations` : implémentations SQLite des DAO et du connecteur (`SQLiteConnector`)
+- **LogicLayer** : modèles métier communs aux clients et à l'API (`Automate`, `Etat`, `Transition`, `Position`, `Utilisateur`)
+- **TestLogic** : tests unitaires (xUnit) du LogicLayer
+- **TestAPI** : tests unitaires (xUnit + Moq) des contrôleurs, services et DAO, exécutés sur une base factice (`FakeBDDConnection`)
+
+L'accès aux données est isolé derrière des interfaces injectées par dépendance (voir `API/Program.cs`), ce qui permet de remplacer la base SQLite par une autre implémentation ou par une fausse connexion dans les tests.
 
 ## Structure des données
 ### MCD (Modele conceptuelle des données)
@@ -262,7 +287,7 @@ Le projet est composé de plusieurs projets :
 
 Nos données sont stockées dans une base de données SQLite structurées comme le MCD ci-dessus
 
-
-
-
-
+# Intégration continue
+Le pipeline GitHub Actions [`.github/workflows/ci.yml`](.github/workflows/ci.yml) se déclenche à chaque push sur `main` et `IsolementDAO`, à chaque pull request vers `main`, ou manuellement :
+1. **Build & Tests** : restauration, compilation en Release et exécution des tests unitaires avec couverture de code (résultats `.trx` et rapports Cobertura disponibles en artefact `test-results`)
+2. **Build de l'image Docker** : construction de l'image à partir de `API/Dockerfile`, uniquement si les tests passent
