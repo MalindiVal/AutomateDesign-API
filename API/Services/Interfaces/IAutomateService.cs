@@ -44,5 +44,7 @@ namespace API.Services.Interfaces
         /// <exception cref="DAOError">Si il y a un probleme avec le DAO</exception>
         Automate UpdateAutomate(Automate automate);
 
+        void DeleteAutomate(int id, int idUser);
+
     }
 }

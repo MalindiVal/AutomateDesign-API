@@ -102,5 +102,29 @@ namespace TestAPI
 
         }
 
+        [Fact]
+        public void TestDelete()
+        {
+            Utilisateur user = new Utilisateur
+            {
+                Id = 12
+            };
+            Automate test = new Automate
+            {
+                Nom = "Test",
+                Etats = new List<Etat>(),
+                Transitions = new List<Transition>(),
+                Utilisateur = user
+
+            };
+            test = this.automateDAO.AddAutomate(test);
+
+
+            this.automateDAO.DeleteAutomate((int)test.Id, (int)user.Id);
+
+            Assert.DoesNotContain(test, this.automateDAO.GetAllAutomates());
+
+        }
+
     }
 }

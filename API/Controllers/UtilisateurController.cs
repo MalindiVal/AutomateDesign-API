@@ -1,5 +1,6 @@
 ﻿using API.Services.Interfaces;
 using LogicLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -35,6 +36,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="login">les données utilisateur avec le login et le mot de passe</param>
         /// <returns>Utilisateur avec l'id</returns>
+        [AllowAnonymous]
         [HttpPost("Login")]
         public IActionResult Login([FromBody] Utilisateur login)
         {
